@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Scadenze Famiglia</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1f3a5f">
+<link rel="apple-touch-icon" href="icona-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Scadenze">
+<style>
+*{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;margin:0;background:#f2f4f7;color:#1b2430;
+     padding-bottom:env(safe-area-inset-bottom)}
+header{background:#1f3a5f;color:#fff;padding:16px 18px;padding-top:calc(16px + env(safe-area-inset-top))}
+header h1{margin:0;font-size:20px}
+header p{margin:4px 0 0;font-size:13px;opacity:.8}
+.wrap{max-width:860px;margin:0 auto;padding:14px}
+.bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
+button{font:inherit;border:0;border-radius:9px;padding:11px 14px;cursor:pointer;background:#e7eaf0;color:#1b2430}
+button:active{filter:brightness(.92)}
+.primary{background:#1f3a5f;color:#fff}
+.green{background:#1d8a4e;color:#fff}
+.ghost{background:#fff;border:1px solid #d3d9e2}
+.inst{background:#7b1fa2;color:#fff;display:none}
+input,select,textarea{font-family:inherit;font-size:16px;width:100%;padding:11px;border:1px solid #cbd3de;border-radius:9px;background:#fff}
+label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px;color:#44536b}
+.banner{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
+        border-radius:11px;padding:12px 14px;margin-bottom:12px;font-size:14px;line-height:1.4}
+.rosso{background:#fdecea;border:1px solid #f0a9a0;color:#8c1d13;animation:pulsa 2.2s infinite}
+.giallo{background:#fff8e1;border:1px solid #f0d58f;color:#73550a}
+.verde{background:#e9f7ee;border:1px solid #b2dfc2;color:#1a5c2a}
+@keyframes pulsa{0%,100%{box-shadow:0 0 0 0 rgba(198,40,40,0)}50%{box-shadow:0 0 0 5px rgba(198,40,40,.13)}}
+.bbtn{background:#1f3a5f;color:#fff;white-space:nowrap}
+.stats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+.stat{background:#fff;border-radius:11px;padding:10px 14px;flex:1;min-width:120px;border:1px solid #e3e8ef}
+.stat b{display:block;font-size:22px}
+.stat span{font-size:12px;color:#66748c}
+.card{background:#fff;border-radius:12px;padding:13px 14px;margin-bottom:10px;border-left:7px solid #ccc;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.c0{border-left-color:#c62828;background:#fff2f2}
+.c1{border-left-color:#ef6c00}
+.c2{border-left-color:#f9a825}
+.c3{border-left-color:#2e7d32}
+.row1{display:flex;justify-content:space-between;align-items:center;gap:10px}
+.tit{font-weight:700;font-size:17px}
+.badge{font-size:12px;font-weight:700;padding:4px 9px;border-radius:20px;background:#eef1f6;white-space:nowrap}
+.b0{background:#c62828;color:#fff}.b1{background:#ef6c00;color:#fff}.b2{background:#f9a825}.b3{background:#e3f2e5;color:#1d5e2a}
+.sub{font-size:13px;color:#66748c;margin-top:3px}
+.note{font-size:13px;margin-top:7px;background:#f7f9fc;padding:7px 9px;border-radius:7px}
+.acts{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}
+.acts button{padding:9px 13px;font-size:14px}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;padding:16px;overflow:auto;z-index:9}
+.modal.on{display:flex}
+.box{background:#fff;border-radius:14px;padding:18px;max-width:560px;width:100%;margin-bottom:40px}
+.box h2{margin:0 0 6px;font-size:19px}
+.two{display:flex;gap:10px}.two>div{flex:1}
+.hint{font-size:12px;color:#7a8699;margin-top:3px}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+.chip{background:#eef1f6;border:1px solid #d7deea;padding:8px 11px;border-radius:20px;font-size:14px;cursor:pointer}
+.empty{text-align:center;padding:34px 16px;color:#7a8699;line-height:1.6}
+.copia{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#f7f9fc;border:1px solid #e3e8ef;border-radius:9px;padding:9px 11px;margin-bottom:7px;font-size:13px}
+.avviso{background:#f7f9fc;border-left:4px solid #1f3a5f;padding:10px 12px;border-radius:7px;font-size:13px;margin:12px 0;line-height:1.5}
+footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>🗓️ Scadenze Famiglia</h1>
+  <p>I dati restano su questo dispositivo. Nessun account, funziona offline.</p>
+</header>
+
+<div class="wrap">
+  <div class="banner" id="banner" style="display:none"></div>
+  <div class="stats" id="stats"></div>
+
+  <div class="bar">
+    <button class="primary" onclick="apriForm()">➕ Nuova scadenza</button>
+    <button class="green" onclick="esportaICS()">📅 Invia al Calendario</button>
+    <button class="ghost" onclick="backup()">💾 Backup</button>
+    <button class="ghost" onclick="document.getElementById('fileIn').click()">📂 Ripristina</button>
+    <button class="ghost" onclick="apriSicurezza()">🛡️ Sicurezza</button>
+    <button class="ghost" onclick="apriTrasf()">🔁 Trasferisci</button>
+    <button class="inst" id="btnInst" onclick="installa()">📲 Installa app</button>
+    <input type="file" id="fileIn" accept=".json" style="display:none" onchange="ripristina(event)">
+  </div>
+
+  <div class="bar">
+    <input id="cerca" placeholder="🔎 Cerca..." oninput="disegna()" style="flex:2;min-width:160px">
+    <select id="filtroSog" onchange="disegna()" style="flex:1;min-width:140px"></select>
+  </div>
+
+  <div id="lista"></div>
+</div>
+
+<footer>Quando la striscia in alto è rossa → premi 💾 Backup 😉</footer>
+
+<div class="modal" id="mForm">
+ <div class="box">
+  <h2 id="formTitolo">Nuova scadenza</h2>
+  <div class="hint">Scegli un modello pronto:</div>
+  <div class="chips" id="chips"></div>
+  <label>Che cosa scade?</label>
+  <input id="f_tit" placeholder="Es. Revisione">
+  <label>Di chi / di cosa?</label>
+  <input id="f_sog" placeholder="Es. Panda GG123AA — oppure: Mario" list="sogList">
+  <datalist id="sogList"></datalist>
+  <div class="two">
+   <div><label>Categoria</label>
+    <select id="f_cat"><option>Auto/Moto</option><option>Salute</option><option>Casa</option>
+    <option>Documenti</option><option>Abbonamenti</option><option>Lavoro</option><option>Altro</option></select></div>
+   <div><label>Data di scadenza</label><input type="date" id="f_data"></div>
+  </div>
+  <label>Ogni quanto si ripete?</label>
+  <select id="f_ric">
+    <option value="0">Una volta sola</option><option value="1">Ogni mese</option>
+    <option value="3">Ogni 3 mesi</option><option value="6">Ogni 6 mesi</option>
+    <option value="12">Ogni anno</option><option value="24">Ogni 2 anni</option>
+    <option value="36">Ogni 3 anni</option><option value="60">Ogni 5 anni</option>
+    <option value="120">Ogni 10 anni</option>
+  </select>
+  <label>Quanti giorni prima vuoi essere avvisato?</label>
+  <input id="f_pre" placeholder="60, 30, 7, 1">
+  <div class="hint">Separa i numeri con la virgola.</div>
+  <div class="two">
+   <div><label>Costo previsto (€)</label><input id="f_cos" placeholder="es. 180"></div>
+   <div><label>Chilometri (facoltativo)</label><input id="f_km" placeholder="es. tagliando a 90.000 km"></div>
+  </div>
+  <label>Note / telefono / officina</label>
+  <textarea id="f_note" rows="2" placeholder="Es. Officina Rossi 0123-456789"></textarea>
+  <label style="display:flex;align-items:center;gap:8px;margin-top:14px">
+    <input type="checkbox" id="f_base" style="width:auto">
+    <span style="font-weight:400;font-size:14px">La prossima volta conta dal giorno in cui l'ho fatto davvero
+    <br><span class="hint">(spunta per dentista, caldaia... NON per bollo/revisione)</span></span>
+  </label>
+  <div class="acts" style="margin-top:18px">
+    <button class="primary" onclick="salvaForm()">Salva</button>
+    <button class="ghost" onclick="chiudi('mForm')">Annulla</button>
+  </div>
+ </div>
+</div>
+
+<div class="modal" id="mFatto">
+ <div class="box">
+  <h2>✅ Segna come fatto</h2>
+  <p id="fattoNome" style="margin:0 0 10px;color:#66748c"></p>
+  <label>Quando l'hai fatto?</label>
+  <input type="date" id="d_data">
+  <div class="two">
+   <div><label>Quanto hai speso? (€)</label><input id="d_costo" placeholder="facoltativo"></div>
+   <div><label>Km attuali</label><input id="d_km" placeholder="facoltativo"></div>
+  </div>
+  <div class="acts" style="margin-top:18px">
+    <button class="green" onclick="confermaFatto()">Conferma</button>
+    <button class="ghost" onclick="chiudi('mFatto')">Annulla</button>
+  </div>
+ </div>
+</div>
+
+<div class="modal" id="mSic">
+ <div class="box">
+  <h2>🛡️ Sicurezza dati</h2>
+  <label>Ricordami di fare il backup ogni:</label>
+  <select id="s_ogni" onchange="cambiaOgni()">
+    <option value="7">7 giorni</option><option value="14">14 giorni (consigliato)</option>
+    <option value="30">30 giorni</option>
+  </select>
+  <div class="acts" style="margin-top:14px">
+    <button class="primary" onclick="backup()">💾 Fai il backup adesso</button>
+    <button onclick="annullaUltima()">↩️ Annulla ultima modifica</button>
+  </div>
+  <h2 style="margin-top:22px;font-size:16px">🕒 Copie di sicurezza automatiche</h2>
+  <div class="hint">L'app salva da sola le ultime 12 versioni.</div>
+  <div id="listaCopie" style="margin-top:10px"></div>
+  <div class="avviso">⚠️ Queste copie stanno <b>dentro il dispositivo</b>. L'unica sicurezza vera è il
+   <b>file di backup</b> salvato fuori (email, chiavetta, Drive). 💾</div>
+  <div class="acts"><button class="ghost" onclick="chiudi('mSic')">Chiudi</button></div>
+ </div>
+</div>
+
+<div class="modal" id="mTra">
+ <div class="box">
+  <h2>🔁 Trasferisci dati</h2>
+  <div class="avviso">
+    <b>Dove HAI i dati:</b> premi "📋 Copia tutto", poi incollali in WhatsApp/email.<br>
+    <b>Sull'altro dispositivo:</b> incolla il testo qui sotto e premi "⬇️ Carica".
+  </div>
+  <textarea id="tArea" rows="7" style="font-size:11px;font-family:monospace"></textarea>
+  <div class="acts" style="margin-top:12px">
+    <button class="primary" onclick="copiaTutto()">📋 Copia tutto</button>
+    <button class="green" onclick="caricaIncollato()">⬇️ Carica</button>
+    <button class="ghost" onclick="chiudi('mTra')">Chiudi</button>
+  </div>
+ </div>
+</div>
+
+<script>
+/* ---------- APP INSTALLABILE ---------- */
+if('serviceWorker' in navigator){
+  addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+}
+let promptInstall=null;
+addEventListener('beforeinstallprompt',e=>{
+  e.preventDefault(); promptInstall=e;
+  document.getElementById('btnInst').style.display='inline-block';
+});
+function installa(){
+  if(!promptInstall){alert('Usa il menu del browser → "Aggiungi a schermata Home".');return;}
+  promptInstall.prompt(); promptInstall=null;
+  document.getElementById('btnInst').style.display='none';
+}
+
+/* ---------- MEMORIA ---------- */
+const KEY='scadenzeFamiglia_v1', KEYC='scadenzeFamiglia_copie';
+let dati=JSON.parse(localStorage.getItem(KEY)||'{"items":[]}');
+if(!dati.items) dati.items=[];
+if(!dati.meta) dati.meta={ultimoBackup:null,modifiche:0,ogniGiorni:14};
+let precedente=JSON.stringify(dati);
+function save(nonContare){
+  if(!nonContare) dati.meta.modifiche=(dati.meta.modifiche||0)+1;
+  registraCopia(precedente);
+  localStorage.setItem(KEY,JSON.stringify(dati));
+  precedente=JSON.stringify(dati); aggiornaBanner();
+}
+
+/* ---------- COPIE DI SICUREZZA ---------- */
+function leggiCopie(){ try{return JSON.parse(localStorage.getItem(KEYC)||'[]')}catch(e){return[]} }
+function registraCopia(payload){
+  try{
+    const c=leggiCopie(), d=JSON.parse(payload);
+    const nuova={t:new Date().toISOString(),n:(d.items||[]).length,payload:payload};
+    if(c.length && (Date.now()-new Date(c[0].t).getTime())<600000 && c[0].n===nuova.n) c[0]=nuova;
+    else c.unshift(nuova);
+    localStorage.setItem(KEYC,JSON.stringify(c.slice(0,12)));
+  }catch(e){}
+}
+function applicaStato(obj){
+  dati=obj;
+  if(!dati.items) dati.items=[];
+  if(!dati.meta) dati.meta={ultimoBackup:null,modifiche:0,ogniGiorni:14};
+  localStorage.setItem(KEY,JSON.stringify(dati));
+  precedente=JSON.stringify(dati); disegna(); aggiornaBanner();
+}
+function annullaUltima(){
+  const c=leggiCopie();
+  if(!c.length){alert('Non c\'è niente da annullare.');return;}
+  if(!confirm('Tornare alla versione di '+fmtT(c[0].t)+' ('+c[0].n+' scadenze)?'))return;
+  registraCopia(JSON.stringify(dati)); applicaStato(JSON.parse(c[0].payload)); mostraCopie();
+}
+function ripristinaCopia(i){
+  const c=leggiCopie(); if(!c[i])return;
+  if(!confirm('Tornare alla versione di '+fmtT(c[i].t)+' con '+c[i].n+' scadenze?'))return;
+  registraCopia(JSON.stringify(dati)); applicaStato(JSON.parse(c[i].payload)); mostraCopie();
+}
+function mostraCopie(){
+  const c=leggiCopie(), L=document.getElementById('listaCopie');
+  if(!c.length){L.innerHTML='<div class="hint">Ancora nessuna copia.</div>';return;}
+  L.innerHTML=c.map((x,i)=>`<div class="copia"><span>🕒 ${fmtT(x.t)} · <b>${x.n}</b> scadenze</span>
+    <button onclick="ripristinaCopia(${i})">Ripristina</button></div>`).join('');
+}
+const fmtT=t=>new Date(t).toLocaleString('it-IT',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'});
+
+/* ---------- STRISCIA PROMEMORIA ---------- */
+function aggiornaBanner(){
+  const b=document.getElementById('banner');
+  if(!dati.items.length){b.style.display='none';return;}
+  b.style.display='flex';
+  const ogni=parseInt(dati.meta.ogniGiorni||14), mod=dati.meta.modifiche||0, ub=dati.meta.ultimoBackup;
+  const g=ub?Math.floor((Date.now()-new Date(ub).getTime())/86400000):null;
+  let cls,txt;
+  if(g===null){ cls='rosso'; txt='⚠️ <b>Non hai mai salvato un backup.</b>'; }
+  else if(g>=ogni){ cls='rosso'; txt='⚠️ <b>Ultimo backup '+g+' giorni fa.</b>'+(mod?' '+mod+' modifiche da allora.':''); }
+  else if(mod>=10||g>=Math.ceil(ogni/2)){ cls='giallo'; txt='🔔 Ultimo backup '+(g===0?'oggi':g+' giorni fa')+(mod?' · '+mod+' modifiche':''); }
+  else { cls='verde'; txt='✅ Backup fatto '+(g===0?'oggi':g===1?'ieri':g+' giorni fa')+'. Tutto a posto.'; }
+  b.className='banner '+cls;
+  b.innerHTML='<span>'+txt+'</span>'+(cls==='verde'?'':'<button class="bbtn" onclick="backup()">💾 Backup adesso</button>');
+}
+
+/* ---------- DATE ---------- */
+const oggiISO=()=>new Date().toISOString().slice(0,10);
+function addMesi(iso,m){
+  const [y,mo,d]=iso.split('-').map(Number);
+  const dt=new Date(y,mo-1+m,1);
+  const last=new Date(dt.getFullYear(),dt.getMonth()+1,0).getDate();
+  dt.setDate(Math.min(d,last));
+  return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');
+}
+function giorniMancanti(iso){
+  const a=new Date(iso+'T00:00:00'), b=new Date(oggiISO()+'T00:00:00');
+  return Math.round((a-b)/86400000);
+}
+const itDate=iso=>iso.split('-').reverse().join('/');
+
+/* ---------- MODELLI ---------- */
+const MODELLI=[
+ {n:'Assicurazione auto',c:'Auto/Moto',r:12,p:'45,20,7,1'},
+ {n:'Bollo auto',c:'Auto/Moto',r:12,p:'30,10,2'},
+ {n:'Revisione',c:'Auto/Moto',r:24,p:'60,30,7,1'},
+ {n:'Tagliando',c:'Auto/Moto',r:12,p:'30,7'},
+ {n:'Cambio gomme',c:'Auto/Moto',r:6,p:'15,3'},
+ {n:'Patente',c:'Documenti',r:120,p:'90,30,7'},
+ {n:'Carta d\u2019identit\u00e0',c:'Documenti',r:120,p:'90,30,7'},
+ {n:'Passaporto',c:'Documenti',r:120,p:'120,60,15'},
+ {n:'Dentista (controllo)',c:'Salute',r:6,p:'14,2'},
+ {n:'Visita oculistica',c:'Salute',r:24,p:'30,7'},
+ {n:'Analisi del sangue',c:'Salute',r:12,p:'21,5'},
+ {n:'Caldaia (manutenzione)',c:'Casa',r:12,p:'30,7'},
+ {n:'Estintore',c:'Casa',r:6,p:'21,5'},
+ {n:'Assicurazione casa',c:'Casa',r:12,p:'45,15,3'},
+ {n:'Abbonamento',c:'Abbonamenti',r:12,p:'20,5'}
+];
+
+/* ---------- SCHERMO ---------- */
+function livello(g){ return g<0?0 : g<=7?1 : g<=30?2 : 3; }
+function testoBadge(g){
+  if(g<0) return 'SCADUTA da '+(-g)+' gg';
+  if(g===0) return 'SCADE OGGI';
+  if(g===1) return 'domani';
+  return 'tra '+g+' giorni';
+}
+function disegna(){
+  const q=(document.getElementById('cerca').value||'').toLowerCase();
+  const fs=document.getElementById('filtroSog').value;
+  const sogg=[...new Set(dati.items.map(i=>i.sog).filter(Boolean))].sort();
+  document.getElementById('filtroSog').innerHTML='<option value="">👥 Tutti</option>'+
+    sogg.map(s=>`<option ${s===fs?'selected':''}>${s}</option>`).join('');
+  document.getElementById('sogList').innerHTML=sogg.map(s=>`<option value="${s}">`).join('');
+
+  let items=[...dati.items].sort((a,b)=>a.data.localeCompare(b.data));
+  const vis=items.filter(i=>(!fs||i.sog===fs)&&(!q||(i.tit+' '+i.sog+' '+i.cat+' '+(i.note||'')).toLowerCase().includes(q)));
+  const sc=items.filter(i=>giorniMancanti(i.data)<0).length;
+  const tra30=items.filter(i=>{const g=giorniMancanti(i.data);return g>=0&&g<=30;}).length;
+  const spesa=items.reduce((s,i)=>s+(i.storico||[]).reduce((t,h)=>t+(parseFloat(h.costo)||0),0),0);
+  document.getElementById('stats').innerHTML=
+    `<div class="stat"><b>${items.length}</b><span>scadenze seguite</span></div>
+     <div class="stat"><b style="color:#c62828">${sc}</b><span>già scadute</span></div>
+     <div class="stat"><b style="color:#ef6c00">${tra30}</b><span>entro 30 giorni</span></div>
+     <div class="stat"><b>${spesa.toFixed(0)} €</b><span>spesi finora</span></div>`;
+
+  const L=document.getElementById('lista');
+  if(!vis.length){
+    L.innerHTML='<div class="empty">Nessuna scadenza.<br>Premi <b>➕ Nuova scadenza</b> per iniziare.<br><br>'+
+      '<span style="font-size:13px">Hai già i dati su un altro dispositivo?<br>Usa <b>🔁 Trasferisci</b>.</span></div>';
+    return;
+  }
+  L.innerHTML=vis.map(i=>{
+    const g=giorniMancanti(i.data), l=livello(g), st=(i.storico||[]).length;
+    return `<div class="card c${l}">
+      <div class="row1"><div class="tit">${esc(i.tit)}</div><div class="badge b${l}">${testoBadge(g)}</div></div>
+      <div class="sub">${esc(i.sog||'—')} · ${esc(i.cat)} · <b>${itDate(i.data)}</b>${i.ric>0?' · ogni '+(i.ric%12===0?(i.ric/12)+' anno/i':i.ric+' mesi'):''}</div>
+      ${(i.note||i.km||i.costo)?`<div class="note">${[i.km?'🚗 '+esc(i.km):'',i.costo?'💶 ~'+esc(i.costo)+' €':'',i.note?esc(i.note):''].filter(Boolean).join(' · ')}</div>`:''}
+      ${st?`<div class="sub" style="margin-top:6px">📘 fatto ${st} volta/e · ultima: ${itDate(i.storico[st-1].data)}</div>`:''}
+      <div class="acts">
+        <button class="green" onclick="apriFatto('${i.id}')">✅ Fatto</button>
+        <button onclick="apriForm('${i.id}')">✏️ Modifica</button>
+        <button onclick="elimina('${i.id}')">🗑️</button>
+      </div></div>`;
+  }).join('');
+}
+const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- FORM ---------- */
+let idCorrente=null;
+function apriForm(id){
+  idCorrente=id||null;
+  document.getElementById('formTitolo').textContent=id?'Modifica scadenza':'Nuova scadenza';
+  document.getElementById('chips').innerHTML=MODELLI.map((m,k)=>`<span class="chip" onclick="usaModello(${k})">${m.n}</span>`).join('');
+  const i=id?dati.items.find(x=>x.id===id):null;
+  V('f_tit',i?i.tit:''); V('f_sog',i?i.sog:''); V('f_cat',i?i.cat:'Auto/Moto');
+  V('f_data',i?i.data:oggiISO()); V('f_ric',i?i.ric:'12');
+  V('f_pre',i?(i.pre||[]).join(', '):'30, 7, 1');
+  V('f_cos',i?i.costo:''); V('f_km',i?i.km:''); V('f_note',i?i.note:'');
+  document.getElementById('f_base').checked=i?!!i.daFatto:false;
+  apri('mForm');
+}
+function usaModello(k){
+  const m=MODELLI[k];
+  V('f_tit',m.n); V('f_cat',m.c); V('f_ric',m.r); V('f_pre',m.p);
+  document.getElementById('f_base').checked=['Salute','Casa'].includes(m.c);
+}
+function salvaForm(){
+  const tit=g('f_tit').trim(), data=g('f_data');
+  if(!tit){alert('Scrivi che cosa scade.');return;}
+  if(!data){alert('Metti la data di scadenza.');return;}
+  const o={id:idCorrente||('s'+Date.now()),tit,sog:g('f_sog').trim(),cat:g('f_cat'),data,
+    ric:parseInt(g('f_ric')),
+    pre:g('f_pre').split(',').map(x=>parseInt(x.trim())).filter(x=>x>=0),
+    costo:g('f_cos').trim(),km:g('f_km').trim(),note:g('f_note').trim(),
+    daFatto:document.getElementById('f_base').checked,
+    storico:idCorrente?(dati.items.find(x=>x.id===idCorrente).storico||[]):[]};
+  if(!o.pre.length) o.pre=[30,7,1];
+  if(idCorrente) dati.items=dati.items.map(x=>x.id===idCorrente?o:x); else dati.items.push(o);
+  save(); chiudi('mForm'); disegna();
+}
+
+/* ---------- FATTO ---------- */
+let idFatto=null;
+function apriFatto(id){
+  idFatto=id;
+  const i=dati.items.find(x=>x.id===id);
+  document.getElementById('fattoNome').textContent=i.tit+' — '+(i.sog||'');
+  V('d_data',oggiISO()); V('d_costo',''); V('d_km',''); apri('mFatto');
+}
+function confermaFatto(){
+  const i=dati.items.find(x=>x.id===idFatto);
+  i.storico=i.storico||[];
+  i.storico.push({data:g('d_data'),costo:g('d_costo'),km:g('d_km')});
+  if(i.ric>0){
+    i.data=addMesi(i.daFatto?g('d_data'):i.data,i.ric);
+    alert('Fatto! ✅\nProssima scadenza: '+itDate(i.data)+'\n\nRicordati di premere "📅 Invia al Calendario".');
+  }else if(confirm('Questa scadenza non si ripete. Eliminarla?')){
+    dati.items=dati.items.filter(x=>x.id!==idFatto);
+  }
+  save(); chiudi('mFatto'); disegna();
+}
+function elimina(id){
+  const i=dati.items.find(x=>x.id===id);
+  if(confirm('Eliminare "'+i.tit+'"?\n\n(Recuperabile da 🛡️ Sicurezza)')){
+    dati.items=dati.items.filter(x=>x.id!==id); save(); disegna();
+  }
+}
+
+/* ---------- CALENDARIO ---------- */
+function esportaICS(){
+  if(!dati.items.length){alert('Prima aggiungi qualche scadenza.');return;}
+  const pad=n=>String(n).padStart(2,'0');
+  const stamp=new Date().toISOString().replace(/[-:]/g,'').split('.')[0]+'Z';
+  const txt=s=>String(s||'').replace(/\\/g,'\\\\').replace(/[,;]/g,m=>'\\'+m).replace(/\n/g,'\\n');
+  const dayAfter=iso=>{const d=new Date(iso+'T00:00:00');d.setDate(d.getDate()+1);
+    return d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate());};
+  let L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//ScadenzeFamiglia//IT','CALSCALE:GREGORIAN','METHOD:PUBLISH'];
+  dati.items.forEach(i=>{
+    L.push('BEGIN:VEVENT','UID:'+i.id+'@scadenzefamiglia','DTSTAMP:'+stamp,
+      'DTSTART;VALUE=DATE:'+i.data.replace(/-/g,''),'DTEND;VALUE=DATE:'+dayAfter(i.data),
+      'SUMMARY:'+txt('⚠️ '+i.tit+(i.sog?' — '+i.sog:'')));
+    const desc=[i.costo?'Costo previsto: '+i.costo+' €':'',i.km?'Km: '+i.km:'',i.note||''].filter(Boolean).join('\n');
+    if(desc) L.push('DESCRIPTION:'+txt(desc));
+    if(i.ric>0) L.push('RRULE:'+(i.ric%12===0?'FREQ=YEARLY;INTERVAL='+(i.ric/12):'FREQ=MONTHLY;INTERVAL='+i.ric));
+    (i.pre||[]).forEach(d=>{
+      const ore=d*24-9;
+      L.push('BEGIN:VALARM','ACTION:DISPLAY',
+        'DESCRIPTION:'+txt(i.tit+(i.sog?' ('+i.sog+')':'')+(d===0?' scade oggi':' tra '+d+' giorni')),
+        'TRIGGER:'+(ore>0?'-PT'+ore+'H':'PT'+Math.abs(ore)+'H'),'END:VALARM');
+    });
+    L.push('END:VEVENT');
+  });
+  L.push('END:VCALENDAR');
+  scarica('scadenze-famiglia.ics',L.join('\r\n'),'text/calendar');
+  alert('File creato! 📅 Ora caricalo nel calendario condiviso.');
+}
+
+/* ---------- BACKUP ---------- */
+function backup(){
+  if(!dati.items.length){alert('Non c\'è ancora niente da salvare.');return;}
+  dati.meta.ultimoBackup=new Date().toISOString(); dati.meta.modifiche=0;
+  localStorage.setItem(KEY,JSON.stringify(dati)); precedente=JSON.stringify(dati);
+  scarica('backup-scadenze-'+oggiISO()+'.json',JSON.stringify(dati,null,1),'application/json');
+  aggiornaBanner();
+  setTimeout(()=>alert('✅ Backup salvato nei Download.\nCopialo su email, chiavetta o Drive.'),500);
+}
+function ripristina(e){
+  const f=e.target.files[0]; if(!f)return;
+  const r=new FileReader();
+  r.onload=()=>{ try{
+      const d=JSON.parse(r.result);
+      if(!d.items) throw 0;
+      if(confirm('Sostituire i dati attuali con il backup ('+d.items.length+' scadenze)?')){
+        registraCopia(JSON.stringify(dati));
+        if(!d.meta)d.meta={ultimoBackup:null,modifiche:0,ogniGiorni:14};
+        d.meta.ultimoBackup=new Date().toISOString(); d.meta.modifiche=0;
+        applicaStato(d); alert('Ripristinato! ✅');
+      }
+    }catch(x){ alert('File non valido.'); } };
+  r.readAsText(f); e.target.value='';
+}
+function scarica(nome,contenuto,tipo){
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(new Blob([contenuto],{type:tipo+';charset=utf-8'}));
+  a.download=nome; document.body.appendChild(a); a.click();
+  setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},1500);
+}
+
+/* ---------- SICUREZZA / TRASFERISCI ---------- */
+function apriSicurezza(){ V('s_ogni',dati.meta.ogniGiorni||14); mostraCopie(); apri('mSic'); }
+function cambiaOgni(){ dati.meta.ogniGiorni=parseInt(g('s_ogni')); save(true); }
+function apriTrasf(){ V('tArea',''); apri('mTra'); }
+function copiaTutto(){
+  const t=document.getElementById('tArea');
+  t.value=JSON.stringify(dati); t.focus(); t.select(); t.setSelectionRange(0,999999);
+  let ok=false; try{ ok=document.execCommand('copy'); }catch(e){}
+  if(!ok&&navigator.clipboard){ navigator.clipboard.writeText(t.value).then(()=>alert('📋 Copiato!'),
+    ()=>alert('Seleziona il testo e copialo a mano.')); }
+  else alert(ok?'📋 Copiato! Incollalo dove vuoi.':'Seleziona il testo e copialo a mano.');
+}
+function caricaIncollato(){
+  const v=g('tArea').trim();
+  if(!v){alert('Prima incolla il testo nel riquadro.');return;}
+  try{
+    const d=JSON.parse(v);
+    if(!d.items) throw 0;
+    if(!confirm('Sostituire i dati di questo dispositivo con i '+d.items.length+' elementi incollati?'))return;
+    registraCopia(JSON.stringify(dati));
+    if(!d.meta)d.meta={ultimoBackup:null,modifiche:0,ogniGiorni:14};
+    applicaStato(d); chiudi('mTra'); alert('Caricato! ✅');
+  }catch(e){ alert('Testo non valido. Copialo tutto, dall\'inizio alla fine.'); }
+}
+
+/* ---------- UTILI ---------- */
+const g=id=>document.getElementById(id).value;
+const V=(id,v)=>document.getElementById(id).value=v??'';
+const apri=id=>document.getElementById(id).classList.add('on');
+const chiudi=id=>document.getElementById(id).classList.remove('on');
+disegna(); aggiornaBanner();
+</script>
+</body>
+</html>
