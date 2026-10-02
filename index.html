@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- SCADENZE FAMIGLIA — versione 5 (menu ☰ + suggerimenti automatici) -->
+<!-- SCADENZE FAMIGLIA — versione 6 (modelli a tendina) -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -78,8 +78,6 @@ label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px;color:#4453
 .box h2{margin:0 0 6px;font-size:19px}
 .two{display:flex;gap:10px}.two>div{flex:1}
 .hint{font-size:12px;color:#7a8699;margin-top:3px}
-.chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
-.chip{background:#eef1f6;border:1px solid #d7deea;padding:9px 12px;border-radius:20px;font-size:14px;cursor:pointer}
 .empty{text-align:center;padding:34px 16px;color:#7a8699;line-height:1.7;font-size:16px}
 .copia{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#f7f9fc;border:1px solid #e3e8ef;border-radius:9px;padding:9px 11px;margin-bottom:7px;font-size:13px}
 .avviso{background:#f7f9fc;border-left:4px solid #1f3a5f;padding:10px 12px;border-radius:7px;font-size:13px;margin:12px 0;line-height:1.5}
@@ -138,14 +136,16 @@ footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
 
 <div id="toast"></div>
 
-<footer>v5 · Quando la striscia in alto è rossa → ☰ Menu → 💾 Backup 😉</footer>
+<footer>v6 · Quando la striscia in alto è rossa → ☰ Menu → 💾 Backup 😉</footer>
 
 <div class="modal" id="mForm">
  <div class="box">
   <h2 id="formTitolo">Nuova scadenza</h2>
   <div class="avviso" id="specHint" style="display:none">🇮🇹 <b>Regola italiana attiva:</b> dopo il "✅ Fatto", l'app calcolerà da sola la data successiva secondo la legge.</div>
-  <div class="hint">Scegli un modello pronto:</div>
-  <div class="chips" id="chips"></div>
+
+  <label>Modello pronto (facoltativo — sceglici e i campi si riempiono da soli)</label>
+  <select id="f_modello" onchange="usaModello(this.value)"></select>
+
   <label>Che cosa scade?</label>
   <input id="f_tit" placeholder="Es. Revisione" list="titList">
   <datalist id="titList"></datalist>
@@ -532,7 +532,6 @@ function disegna(){
   document.getElementById('filtroSog').innerHTML='<option value="">👥 Tutti</option>'+
     sogg.map(s=>`<option ${s===fs?'selected':''}>${esc(s)}</option>`).join('');
   document.getElementById('sogList').innerHTML=sogg.map(s=>`<option value="${esc(s)}">`).join('');
-  /* suggerimenti titoli: si aggiornano da soli a ogni scadenza scritta */
   const tits=[...new Set(dati.items.map(i=>i.tit).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'it'));
   document.getElementById('titList').innerHTML=tits.map(t=>`<option value="${esc(t)}">`).join('');
 
@@ -582,7 +581,8 @@ const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&g
 /* ---------- FORM ---------- */
 let idCorrente=null, duplicando=false, specPending=null, dnPending=null;
 function riempiChips(){
-  document.getElementById('chips').innerHTML=MODELLI.map((m,k)=>`<span class="chip" onclick="usaModello(${k})">${m.n}</span>`).join('');
+  document.getElementById('f_modello').innerHTML='<option value="">— Scegli un modello (facoltativo) —</option>'+
+    MODELLI.map((m,k)=>`<option value="${k}">${m.n}</option>`).join('');
 }
 function riempiCampi(i){
   V('f_tit',i?i.tit:''); V('f_sog',i?i.sog:''); V('f_cat',i?i.cat:'Auto/Moto');
@@ -615,9 +615,11 @@ function apriDuplica(id){
   setTimeout(()=>{document.getElementById('f_sog').focus();},400);
 }
 function usaModello(k){
-  const m=MODELLI[k];
+  if(k==='') return;
+  const m=MODELLI[parseInt(k)];
   V('f_tit',m.n); V('f_cat',m.c); V('f_ric',m.r); V('f_pre',m.p);
   document.getElementById('f_base').checked=['Salute','Casa'].includes(m.c);
+  document.getElementById('f_modello').value='';
 }
 function salvaForm(){
   const tit=g('f_tit').trim(), data=g('f_data');
