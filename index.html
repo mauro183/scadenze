@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- SCADENZE FAMIGLIA — versione 3 (Oggi / Rimanda / Duplica) -->
+<!-- SCADENZE FAMIGLIA — versione 4 (regole italiane automatiche) -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -30,13 +30,11 @@ button:active{filter:brightness(.92)}
 .arancio{background:#ef6c00;color:#fff}
 input,select,textarea{font-family:inherit;font-size:16px;width:100%;padding:11px;border:1px solid #cbd3de;border-radius:9px;background:#fff}
 label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px;color:#44536b}
-/* ---- SCHEDE OGGI / TUTTE ---- */
 .tabs{display:flex;gap:8px;margin-bottom:12px}
 .tab{flex:1;padding:13px 10px;font-size:16px;font-weight:700;border-radius:11px;background:#e7eaf0;color:#44536b}
 .tab.attiva{background:#1f3a5f;color:#fff}
 .sez{font-size:12px;font-weight:800;letter-spacing:.5px;color:#7a8699;margin:18px 2px 8px;text-transform:uppercase}
 .wide{width:100%;padding:13px;font-size:15px;margin-top:4px}
-/* ---- STRISCIA BACKUP ---- */
 .banner{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
         border-radius:11px;padding:12px 14px;margin-bottom:12px;font-size:14px;line-height:1.4}
 .rosso{background:#fdecea;border:1px solid #f0a9a0;color:#8c1d13;animation:pulsa 2.2s infinite}
@@ -44,12 +42,10 @@ label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px;color:#4453
 .verde{background:#e9f7ee;border:1px solid #b2dfc2;color:#1a5c2a}
 @keyframes pulsa{0%,100%{box-shadow:0 0 0 0 rgba(198,40,40,0)}50%{box-shadow:0 0 0 5px rgba(198,40,40,.13)}}
 .bbtn{background:#1f3a5f;color:#fff;white-space:nowrap}
-/* ---- STATISTICHE ---- */
 .stats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
 .stat{background:#fff;border-radius:11px;padding:10px 14px;flex:1;min-width:120px;border:1px solid #e3e8ef}
 .stat b{display:block;font-size:22px}
 .stat span{font-size:12px;color:#66748c}
-/* ---- CARD ---- */
 .card{background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;border-left:7px solid #ccc;box-shadow:0 1px 3px rgba(0,0,0,.06)}
 .c0{border-left-color:#c62828;background:#fff2f2}
 .c1{border-left-color:#ef6c00}
@@ -63,7 +59,6 @@ label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px;color:#4453
 .note{font-size:13px;margin-top:7px;background:#f7f9fc;padding:8px 10px;border-radius:7px}
 .acts{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
 .acts button{padding:11px 13px;font-size:14px;min-height:46px}
-/* ---- MODALI ---- */
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;padding:16px;overflow:auto;z-index:9}
 .modal.on{display:flex}
 .box{background:#fff;border-radius:14px;padding:18px;max-width:560px;width:100%;margin-bottom:40px}
@@ -75,7 +70,9 @@ label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px;color:#4453
 .empty{text-align:center;padding:34px 16px;color:#7a8699;line-height:1.7;font-size:16px}
 .copia{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#f7f9fc;border:1px solid #e3e8ef;border-radius:9px;padding:9px 11px;margin-bottom:7px;font-size:13px}
 .avviso{background:#f7f9fc;border-left:4px solid #1f3a5f;padding:10px 12px;border-radius:7px;font-size:13px;margin:12px 0;line-height:1.5}
-/* ---- TOAST (messaggino) ---- */
+.fset{border:1px solid #e3e8ef;border-radius:12px;padding:12px 14px;margin-bottom:14px;background:#fbfcfe}
+.fset h3{margin:0 0 4px;font-size:15px}
+.res{background:#e9f7ee;border:1px solid #b2dfc2;color:#1a5c2a;border-radius:9px;padding:10px 12px;margin-top:10px;font-size:14px;line-height:1.55;display:none}
 #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(90px);background:#1b2430;color:#fff;
        padding:13px 20px;border-radius:26px;font-size:14px;opacity:0;transition:.25s;z-index:99;max-width:92%;
        text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.35);pointer-events:none}
@@ -94,7 +91,6 @@ footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
 
   <div class="banner" id="banner" style="display:none"></div>
 
-  <!-- SCHEDE -->
   <div class="tabs">
     <button id="tabOggi" class="tab attiva" onclick="cambiaVista('oggi')">🏠 Oggi</button>
     <button id="tabTutte" class="tab" onclick="cambiaVista('tutte')">📚 Tutte</button>
@@ -104,6 +100,7 @@ footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
 
   <div class="bar">
     <button class="primary" onclick="apriForm()">➕ Nuova scadenza</button>
+    <button class="ghost" onclick="apriCalc()">🇮🇹 Regole IT</button>
     <button class="green" onclick="esportaICS()">📅 Invia al Calendario</button>
     <button class="ghost" onclick="backup()">💾 Backup</button>
     <button class="ghost" onclick="document.getElementById('fileIn').click()">📂 Ripristina</button>
@@ -123,11 +120,12 @@ footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
 
 <div id="toast"></div>
 
-<footer>v3 · Quando la striscia in alto è rossa → premi 💾 Backup 😉</footer>
+<footer>v4 · Quando la striscia in alto è rossa → premi 💾 Backup 😉</footer>
 
 <div class="modal" id="mForm">
  <div class="box">
   <h2 id="formTitolo">Nuova scadenza</h2>
+  <div class="avviso" id="specHint" style="display:none">🇮🇹 <b>Regola italiana attiva:</b> dopo il "✅ Fatto", l'app calcolerà da sola la data successiva secondo la legge.</div>
   <div class="hint">Scegli un modello pronto:</div>
   <div class="chips" id="chips"></div>
   <label>Che cosa scade?</label>
@@ -154,11 +152,11 @@ footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
   <div class="hint">Separa i numeri con la virgola.</div>
   <div class="two">
    <div><label>Costo previsto (€)</label><input id="f_cos" placeholder="es. 180"></div>
-   <div><label>Chilometri (facoltativo)</label><input id="f_km" placeholder="es. tagliando a 90.000 km"></div>
+   <div><label>Km previsti alla prossima scadenza</label><input id="f_km" placeholder="es. 90000 (per il tagliando)"></div>
   </div>
   <label>Note / telefono / officina</label>
   <textarea id="f_note" rows="2" placeholder="Es. Officina Rossi 0123-456789"></textarea>
-  <label style="display:flex;align-items:center;gap:8px;margin-top:14px">
+  <label id="labBase" style="display:flex;align-items:center;gap:8px;margin-top:14px">
     <input type="checkbox" id="f_base" style="width:auto">
     <span style="font-weight:400;font-size:14px">La prossima volta conta dal giorno in cui l'ho fatto davvero
     <br><span class="hint">(spunta per dentista, caldaia... NON per bollo/revisione)</span></span>
@@ -178,12 +176,55 @@ footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
   <input type="date" id="d_data">
   <div class="two">
    <div><label>Quanto hai speso? (€)</label><input id="d_costo" placeholder="facoltativo"></div>
-   <div><label>Km attuali</label><input id="d_km" placeholder="facoltativo"></div>
+   <div><label>Km attuali (contachilometri)</label><input id="d_km" placeholder="es. 82500"></div>
   </div>
+  <div class="hint" style="margin-top:4px">I km servono all'app per stimare il prossimo tagliando 🚙</div>
   <div class="acts" style="margin-top:18px">
     <button class="green" onclick="confermaFatto()">Conferma</button>
     <button class="ghost" onclick="chiudi('mFatto')">Annulla</button>
   </div>
+ </div>
+</div>
+
+<div class="modal" id="mCalc">
+ <div class="box">
+  <h2>🇮🇹 Calcolatori italiani</h2>
+  <div class="hint">Insegnano all'app le regole della legge: lei calcola le date da sola, per sempre.</div>
+
+  <div class="fset">
+   <h3>🚗 Revisione</h3>
+   <div class="hint">Prima revisione: 4 anni dall'immatricolazione (3 per le moto). Poi ogni 2 anni, fino all'ultimo giorno del mese.</div>
+   <label>Data di immatricolazione</label>
+   <input type="date" id="c_imm">
+   <label>Veicolo</label>
+   <select id="c_tipo"><option value="auto">Auto</option><option value="moto">Moto</option></select>
+   <label>Data dell'ultima revisione (se l'hai già fatta)</label>
+   <input type="date" id="c_ult">
+   <div class="acts"><button class="primary" onclick="calcRev()">🧮 Calcola</button></div>
+   <div class="res" id="rRev"></div>
+  </div>
+
+  <div class="fset">
+   <h3>🧾 Bollo auto</h3>
+   <div class="hint">Si paga ogni anno entro la fine del mese SUCCESSIVO al mese di immatricolazione (es. immatricolata a gennaio → entro fine febbraio).</div>
+   <label>Data di immatricolazione (basta il mese)</label>
+   <input type="date" id="c_bol">
+   <div class="acts"><button class="primary" onclick="calcBollo()">🧮 Calcola</button></div>
+   <div class="res" id="rBol"></div>
+  </div>
+
+  <div class="fset">
+   <h3>🪪 Patente</h3>
+   <div class="hint">Durata del rinnovo secondo l'età: 10 anni fino a 50, poi 5, poi 3, poi 2. Il rinnovo si può fare da 4 mesi prima.</div>
+   <label>Data di nascita</label>
+   <input type="date" id="c_nasc">
+   <label>Scadenza stampata sulla patente</label>
+   <input type="date" id="c_scad">
+   <div class="acts"><button class="primary" onclick="calcPat()">🧮 Calcola</button></div>
+   <div class="res" id="rPat"></div>
+  </div>
+
+  <div class="acts"><button class="ghost" onclick="chiudi('mCalc')">Chiudi</button></div>
  </div>
 </div>
 
@@ -335,7 +376,61 @@ function giorniMancanti(iso){
   const a=new Date(iso+'T00:00:00'), b=new Date(oggiISO()+'T00:00:00');
   return Math.round((a-b)/86400000);
 }
+function fineMese(iso){
+  const [y,m]=iso.split('-').map(Number);
+  const last=new Date(y,m,0).getDate();
+  return y+'-'+String(m).padStart(2,'0')+'-'+String(last).padStart(2,'0');
+}
 const itDate=iso=>iso.split('-').reverse().join('/');
+
+/* ---------- REGOLE ITALIANE ---------- */
+function prossimaRev(imm,tipo,ult){
+  let base = ult ? addMesi(ult,24) : addMesi(imm, tipo==='moto'?36:48);
+  let d=fineMese(base), n=0;
+  while(d<oggiISO() && n<30){ base=addMesi(base,24); d=fineMese(base); n++; }
+  return d;
+}
+function prossimoBollo(isoImm){
+  const mese=parseInt(isoImm.slice(5,7));
+  const y=new Date().getFullYear();
+  const termine=anno=>{
+    let m=mese+1, yy=anno; if(m>12){m=1;yy++;}
+    const last=new Date(yy,m,0).getDate();
+    return yy+'-'+String(m).padStart(2,'0')+'-'+String(last).padStart(2,'0');
+  };
+  let t=termine(y); if(t<oggiISO()) t=termine(y+1);
+  return t;
+}
+function etaIs(nasc,ref){
+  const n=nasc.split('-').map(Number), r=ref.split('-').map(Number);
+  let e=r[0]-n[0]; if(r[1]<n[1]||(r[1]===n[1]&&r[2]<n[2])) e--;
+  return e;
+}
+function durataPatente(e){ return e<51?120 : e<71?60 : e<81?36 : 24; }
+
+/* ---------- STIMA TAGLIANDO A KM ---------- */
+function stimaKm(i){
+  const target=parseFloat(String(i.km||'').replace(/[^\d.,]/g,'').replace(',','.'));
+  if(!target) return null;
+  const pts=(i.storico||[]).filter(h=>parseFloat(h.km)>0)
+    .map(h=>({d:h.data,k:parseFloat(h.km)})).sort((a,b)=>a.d.localeCompare(b.d));
+  if(!pts.length) return null;
+  let rate=12000/365; // media italiana se ho un solo punto
+  if(pts.length>=2){
+    const a=pts[0], b=pts[pts.length-1];
+    const gg=(new Date(b.d+'T00:00:00')-new Date(a.d+'T00:00:00'))/86400000;
+    if(gg>=30 && b.k>a.k) rate=(b.k-a.k)/gg;
+  }
+  const b=pts[pts.length-1];
+  const ggStima=(target-b.k)/rate;
+  if(ggStima<0 || ggStima>2200) return null;
+  return addGiorni(b.d, Math.round(ggStima));
+}
+function spostaKm(id,dataNuova){
+  const i=dati.items.find(x=>x.id===id); if(!i)return;
+  i.data=dataNuova; save(); disegna();
+  toast('⏩ Spostata al '+itDate(dataNuova)+' (chilometraggio)');
+}
 
 /* ---------- MODELLI ---------- */
 const MODELLI=[
@@ -373,16 +468,27 @@ function testoBadge(g){
   if(g===1) return 'domani';
   return 'tra '+g+' giorni';
 }
+function ripetizione(i){
+  if(i.spec==='revisione') return ' · 🇮🇹 ogni 2 anni';
+  if(i.spec==='bollo') return ' · 🇮🇹 annuale (mese successivo)';
+  if(i.spec==='patente') return ' · 🇮🇹 rinnovo secondo età';
+  if(i.ric>0) return ' · ogni '+(i.ric%12===0?(i.ric/12)+' anno/i':i.ric+' mesi');
+  return '';
+}
 function cardHTML(i){
-  const g=giorniMancanti(i.data), l=livello(g), st=(i.storico||[]).length;
+  const g2=giorniMancanti(i.data), l=livello(g2), fattoN=(i.storico||[]).length;
+  const st=stimaKm(i);
+  const rigaKm = st ? `<div class="note">🚙 target ${(parseFloat(String(i.km).replace(/[^\d]/g,''))||0).toLocaleString('it-IT')} km · a questo ritmo: ~<b>${itDate(st)}</b></div>` : '';
   return `<div class="card c${l}">
-    <div class="row1"><div class="tit">${esc(i.tit)}</div><div class="badge b${l}">${testoBadge(g)}</div></div>
-    <div class="sub">${esc(i.sog||'—')} · ${esc(i.cat)} · <b>${itDate(i.data)}</b>${i.ric>0?' · ogni '+(i.ric%12===0?(i.ric/12)+' anno/i':i.ric+' mesi'):''}</div>
-    ${(i.note||i.km||i.costo)?`<div class="note">${[i.km?'🚗 '+esc(i.km):'',i.costo?'💶 ~'+esc(i.costo)+' €':'',i.note?esc(i.note):''].filter(Boolean).join(' · ')}</div>`:''}
-    ${st?`<div class="sub" style="margin-top:6px">📘 fatto ${st} volta/e · ultima: ${itDate(i.storico[st-1].data)}</div>`:''}
+    <div class="row1"><div class="tit">${esc(i.tit)}</div><div class="badge b${l}">${testoBadge(g2)}</div></div>
+    <div class="sub">${esc(i.sog||'—')} · ${esc(i.cat)} · <b>${itDate(i.data)}</b>${ripetizione(i)}</div>
+    ${rigaKm}
+    ${(i.note||i.costo)?`<div class="note">${[i.costo?'💶 ~'+esc(i.costo)+' €':'',i.note?esc(i.note):''].filter(Boolean).join(' · ')}</div>`:''}
+    ${fattoN?`<div class="sub" style="margin-top:6px">📘 fatto ${fattoN} volta/e · ultima: ${itDate(i.storico[fattoN-1].data)}</div>`:''}
     <div class="acts">
       <button class="green" onclick="apriFatto('${i.id}')">✅ Fatto</button>
       <button class="arancio" onclick="rimanda('${i.id}')">⏰ +7gg</button>
+      ${st && st<i.data?`<button class="arancio" onclick="spostaKm('${i.id}','${st}')">⏩ usa km: ${itDate(st)}</button>`:''}
       <button onclick="apriDuplica('${i.id}')" title="Duplica">📄</button>
       <button onclick="apriForm('${i.id}')" title="Modifica">✏️</button>
       <button onclick="elimina('${i.id}')" title="Elimina">🗑️</button>
@@ -414,7 +520,7 @@ function disegna(){
   const L=document.getElementById('lista');
 
   if(!dati.items.length){
-    L.innerHTML='<div class="empty">Nessuna scadenza.<br>Premi <b>➕ Nuova scadenza</b> per iniziare.<br><br>'+
+    L.innerHTML='<div class="empty">Nessuna scadenza.<br>Premi <b>➕ Nuova scadenza</b> oppure <b>🇮🇹 Regole IT</b> per iniziare.<br><br>'+
       '<span style="font-size:13px">Hai già i dati su un altro dispositivo?<br>Usa <b>🔁 Trasferisci</b>.</span></div>';
     return;
   }
@@ -440,7 +546,7 @@ function disegna(){
 const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 /* ---------- FORM ---------- */
-let idCorrente=null, duplicando=false;
+let idCorrente=null, duplicando=false, specPending=null, dnPending=null;
 function riempiChips(){
   document.getElementById('chips').innerHTML=MODELLI.map((m,k)=>`<span class="chip" onclick="usaModello(${k})">${m.n}</span>`).join('');
 }
@@ -451,20 +557,26 @@ function riempiCampi(i){
   V('f_cos',i?i.costo:''); V('f_km',i?i.km:''); V('f_note',i?i.note:'');
   document.getElementById('f_base').checked=i?!!i.daFatto:false;
 }
+function gestisciSpecUI(){
+  document.getElementById('specHint').style.display = specPending?'block':'none';
+  document.getElementById('labBase').style.display  = specPending?'none':'flex';
+}
 function apriForm(id){
   idCorrente=id||null; duplicando=false;
+  const i=id?dati.items.find(x=>x.id===id):null;
+  specPending=i?(i.spec||null):null;
+  dnPending=i?(i.dn||null):null;
   document.getElementById('formTitolo').textContent=id?'✏️ Modifica scadenza':'➕ Nuova scadenza';
-  riempiChips();
-  riempiCampi(id?dati.items.find(x=>x.id===id):null);
+  riempiChips(); riempiCampi(i); gestisciSpecUI();
   apri('mForm');
 }
 function apriDuplica(id){
   const i=dati.items.find(x=>x.id===id);
-  idCorrente=null; duplicando=true;
+  idCorrente=null; duplicando=true; specPending=null; dnPending=null;
   document.getElementById('formTitolo').textContent='📄 Duplica: '+i.tit;
-  riempiChips();
-  riempiCampi(i);
+  riempiChips(); riempiCampi(i);
   document.getElementById('f_sog').value='';
+  gestisciSpecUI();
   apri('mForm');
   setTimeout(()=>{document.getElementById('f_sog').focus();},400);
 }
@@ -484,9 +596,70 @@ function salvaForm(){
     daFatto:document.getElementById('f_base').checked,
     storico:idCorrente?(dati.items.find(x=>x.id===idCorrente).storico||[]):[]};
   if(!o.pre.length) o.pre=[30,7,1];
+  if(specPending){ o.spec=specPending; if(dnPending) o.dn=dnPending; o.daFatto=false; }
   if(idCorrente) dati.items=dati.items.map(x=>x.id===idCorrente?o:x); else dati.items.push(o);
+  specPending=null; dnPending=null;
   save(); chiudi('mForm'); disegna();
   if(duplicando){ toast('📄 Copia creata!'); duplicando=false; }
+}
+
+/* ---------- CALCOLATORI ITALIANI ---------- */
+function apriCalc(){
+  ['rRev','rBol','rPat'].forEach(id=>document.getElementById(id).style.display='none');
+  apri('mCalc');
+}
+function salvaDaCalc(spec,tit,data,ric,pre,cat){
+  specPending=spec; dnPending=null;
+  apriFormPrecompilato({tit,data,ric,pre,cat});
+}
+function salvaPat(nasc,data){
+  specPending='patente'; dnPending=nasc;
+  apriFormPrecompilato({tit:'Rinnovo patente',data,ric:durataPatente(etaIs(nasc,data)),pre:'120,60,30,7',cat:'Documenti'});
+}
+function apriFormPrecompilato(cfg){
+  chiudi('mCalc');
+  idCorrente=null; duplicando=false;
+  document.getElementById('formTitolo').textContent='➕ Nuova scadenza';
+  riempiChips(); riempiCampi(null);
+  V('f_tit',cfg.tit); V('f_cat',cfg.cat); V('f_data',cfg.data);
+  V('f_ric',String(cfg.ric)); V('f_pre',cfg.pre);
+  gestisciSpecUI();
+  apri('mForm');
+}
+function calcRev(){
+  const imm=g('c_imm'), tipo=g('c_tipo'), ult=g('c_ult');
+  if(!imm){alert('Metti la data di immatricolazione.');return;}
+  const d=prossimaRev(imm,tipo,ult);
+  const spieg = ult ? 'Ultima revisione: '+itDate(ult)+' → vale 2 anni.'
+    : (tipo==='moto' ? 'La prima revisione delle moto è a 3 anni dall\u2019immatricolazione.'
+                     : 'La prima revisione delle auto è a 4 anni dall\u2019immatricolazione.');
+  const r=document.getElementById('rRev');
+  r.style.display='block';
+  r.innerHTML='✅ <b>Prossima revisione entro il '+itDate(d)+'</b><br>'+spieg+
+    ' Scade sempre l\u2019ultimo giorno del mese.'+
+    '<div class="acts"><button class="green" onclick="salvaDaCalc(\'revisione\',\'Revisione\',\''+d+'\',24,\'60,30,7,1\',\'Auto/Moto\')">💾 Salva questa scadenza</button></div>';
+}
+function calcBollo(){
+  const b=g('c_bol');
+  if(!b){alert('Metti la data di immatricolazione.');return;}
+  const d=prossimoBollo(b);
+  const r=document.getElementById('rBol');
+  r.style.display='block';
+  r.innerHTML='✅ <b>Paga il bollo entro il '+itDate(d)+'</b><br>Regola: ogni anno, entro la fine del mese successivo a quello di immatricolazione.'+
+    '<div class="acts"><button class="green" onclick="salvaDaCalc(\'bollo\',\'Bollo auto\',\''+d+'\',12,\'30,10,2\',\'Auto/Moto\')">💾 Salva questa scadenza</button></div>';
+}
+function calcPat(){
+  const n=g('c_nasc'), s=g('c_scad');
+  if(!n||!s){alert('Servono la data di nascita e la scadenza sulla patente.');return;}
+  if(s<=n){alert('Controlla le date: la scadenza risulta prima della nascita.');return;}
+  const e=etaIs(n,s), mesi=durataPatente(e);
+  const pross=addMesi(s,mesi);
+  const r=document.getElementById('rPat');
+  r.style.display='block';
+  r.innerHTML='La patente scade il <b>'+itDate(s)+'</b> (avrai '+e+' anni).<br>'+
+    'Rinnovandola, durerà <b>'+(mesi/12)+' anni</b>: fino al '+itDate(pross)+'.<br>'+
+    '💡 Il rinnovo si può fare da 4 mesi prima (serve la visita medica).'+
+    '<div class="acts"><button class="green" onclick="salvaPat(\''+n+'\',\''+s+'\')">💾 Salva questa scadenza</button></div>';
 }
 
 /* ---------- RIMANDA ---------- */
@@ -509,7 +682,18 @@ function confermaFatto(){
   const i=dati.items.find(x=>x.id===idFatto);
   i.storico=i.storico||[];
   i.storico.push({data:g('d_data'),costo:g('d_costo'),km:g('d_km')});
-  if(i.ric>0){
+  if(i.spec){
+    /* 🇮🇹 regole italiane: ricalcolo automatico */
+    if(i.spec==='revisione'){ i.data=fineMese(addMesi(i.data,24)); }
+    else if(i.spec==='bollo'){ i.data=fineMese(addMesi(i.data,12)); }
+    else if(i.spec==='patente'){
+      const mesi=i.dn?durataPatente(etaIs(i.dn,i.data)):(i.ric||120);
+      i.data=addMesi(i.data,mesi);
+    }
+    toast('✅ Fatto! Prossima: '+itDate(i.data));
+    alert('Fatto! ✅\nNuova scadenza calcolata con la regola italiana 🇮🇹: '+itDate(i.data)+
+          '\n\nRicordati di premere "📅 Invia al Calendario".');
+  }else if(i.ric>0){
     i.data=addMesi(i.daFatto?g('d_data'):i.data,i.ric);
     toast('✅ Fatto! Prossima: '+itDate(i.data));
     alert('Fatto! ✅\nProssima scadenza: '+itDate(i.data)+'\n\nRicordati di premere "📅 Invia al Calendario".');
@@ -539,7 +723,7 @@ function esportaICS(){
     L.push('BEGIN:VEVENT','UID:'+i.id+'@scadenzefamiglia','DTSTAMP:'+stamp,
       'DTSTART;VALUE=DATE:'+i.data.replace(/-/g,''),'DTEND;VALUE=DATE:'+dayAfter(i.data),
       'SUMMARY:'+txt('⚠️ '+i.tit+(i.sog?' — '+i.sog:'')));
-    const desc=[i.costo?'Costo previsto: '+i.costo+' €':'',i.km?'Km: '+i.km:'',i.note||''].filter(Boolean).join('\n');
+    const desc=[i.costo?'Costo previsto: '+i.costo+' €':'',i.km?'Km previsti: '+i.km:'',i.note||''].filter(Boolean).join('\n');
     if(desc) L.push('DESCRIPTION:'+txt(desc));
     if(i.ric>0) L.push('RRULE:'+(i.ric%12===0?'FREQ=YEARLY;INTERVAL='+(i.ric/12):'FREQ=MONTHLY;INTERVAL='+i.ric));
     (i.pre||[]).forEach(d=>{
