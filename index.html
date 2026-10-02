@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!-- SCADENZE FAMIGLIA — versione 3 (Oggi / Rimanda / Duplica) -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -26,8 +27,16 @@ button:active{filter:brightness(.92)}
 .green{background:#1d8a4e;color:#fff}
 .ghost{background:#fff;border:1px solid #d3d9e2}
 .inst{background:#7b1fa2;color:#fff;display:none}
+.arancio{background:#ef6c00;color:#fff}
 input,select,textarea{font-family:inherit;font-size:16px;width:100%;padding:11px;border:1px solid #cbd3de;border-radius:9px;background:#fff}
 label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px;color:#44536b}
+/* ---- SCHEDE OGGI / TUTTE ---- */
+.tabs{display:flex;gap:8px;margin-bottom:12px}
+.tab{flex:1;padding:13px 10px;font-size:16px;font-weight:700;border-radius:11px;background:#e7eaf0;color:#44536b}
+.tab.attiva{background:#1f3a5f;color:#fff}
+.sez{font-size:12px;font-weight:800;letter-spacing:.5px;color:#7a8699;margin:18px 2px 8px;text-transform:uppercase}
+.wide{width:100%;padding:13px;font-size:15px;margin-top:4px}
+/* ---- STRISCIA BACKUP ---- */
 .banner{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
         border-radius:11px;padding:12px 14px;margin-bottom:12px;font-size:14px;line-height:1.4}
 .rosso{background:#fdecea;border:1px solid #f0a9a0;color:#8c1d13;animation:pulsa 2.2s infinite}
@@ -35,23 +44,26 @@ label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px;color:#4453
 .verde{background:#e9f7ee;border:1px solid #b2dfc2;color:#1a5c2a}
 @keyframes pulsa{0%,100%{box-shadow:0 0 0 0 rgba(198,40,40,0)}50%{box-shadow:0 0 0 5px rgba(198,40,40,.13)}}
 .bbtn{background:#1f3a5f;color:#fff;white-space:nowrap}
+/* ---- STATISTICHE ---- */
 .stats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
 .stat{background:#fff;border-radius:11px;padding:10px 14px;flex:1;min-width:120px;border:1px solid #e3e8ef}
 .stat b{display:block;font-size:22px}
 .stat span{font-size:12px;color:#66748c}
-.card{background:#fff;border-radius:12px;padding:13px 14px;margin-bottom:10px;border-left:7px solid #ccc;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+/* ---- CARD ---- */
+.card{background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;border-left:7px solid #ccc;box-shadow:0 1px 3px rgba(0,0,0,.06)}
 .c0{border-left-color:#c62828;background:#fff2f2}
 .c1{border-left-color:#ef6c00}
 .c2{border-left-color:#f9a825}
 .c3{border-left-color:#2e7d32}
 .row1{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .tit{font-weight:700;font-size:17px}
-.badge{font-size:12px;font-weight:700;padding:4px 9px;border-radius:20px;background:#eef1f6;white-space:nowrap}
+.badge{font-size:12px;font-weight:700;padding:5px 10px;border-radius:20px;background:#eef1f6;white-space:nowrap}
 .b0{background:#c62828;color:#fff}.b1{background:#ef6c00;color:#fff}.b2{background:#f9a825}.b3{background:#e3f2e5;color:#1d5e2a}
 .sub{font-size:13px;color:#66748c;margin-top:3px}
-.note{font-size:13px;margin-top:7px;background:#f7f9fc;padding:7px 9px;border-radius:7px}
-.acts{display:flex;gap:7px;margin-top:10px;flex-wrap:wrap}
-.acts button{padding:9px 13px;font-size:14px}
+.note{font-size:13px;margin-top:7px;background:#f7f9fc;padding:8px 10px;border-radius:7px}
+.acts{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+.acts button{padding:11px 13px;font-size:14px;min-height:46px}
+/* ---- MODALI ---- */
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;padding:16px;overflow:auto;z-index:9}
 .modal.on{display:flex}
 .box{background:#fff;border-radius:14px;padding:18px;max-width:560px;width:100%;margin-bottom:40px}
@@ -59,10 +71,15 @@ label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px;color:#4453
 .two{display:flex;gap:10px}.two>div{flex:1}
 .hint{font-size:12px;color:#7a8699;margin-top:3px}
 .chips{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
-.chip{background:#eef1f6;border:1px solid #d7deea;padding:8px 11px;border-radius:20px;font-size:14px;cursor:pointer}
-.empty{text-align:center;padding:34px 16px;color:#7a8699;line-height:1.6}
+.chip{background:#eef1f6;border:1px solid #d7deea;padding:9px 12px;border-radius:20px;font-size:14px;cursor:pointer}
+.empty{text-align:center;padding:34px 16px;color:#7a8699;line-height:1.7;font-size:16px}
 .copia{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#f7f9fc;border:1px solid #e3e8ef;border-radius:9px;padding:9px 11px;margin-bottom:7px;font-size:13px}
 .avviso{background:#f7f9fc;border-left:4px solid #1f3a5f;padding:10px 12px;border-radius:7px;font-size:13px;margin:12px 0;line-height:1.5}
+/* ---- TOAST (messaggino) ---- */
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(90px);background:#1b2430;color:#fff;
+       padding:13px 20px;border-radius:26px;font-size:14px;opacity:0;transition:.25s;z-index:99;max-width:92%;
+       text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.35);pointer-events:none}
+#toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
 </style>
 </head>
@@ -74,7 +91,15 @@ footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
 </header>
 
 <div class="wrap">
+
   <div class="banner" id="banner" style="display:none"></div>
+
+  <!-- SCHEDE -->
+  <div class="tabs">
+    <button id="tabOggi" class="tab attiva" onclick="cambiaVista('oggi')">🏠 Oggi</button>
+    <button id="tabTutte" class="tab" onclick="cambiaVista('tutte')">📚 Tutte</button>
+  </div>
+
   <div class="stats" id="stats"></div>
 
   <div class="bar">
@@ -96,7 +121,9 @@ footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
   <div id="lista"></div>
 </div>
 
-<footer>Quando la striscia in alto è rossa → premi 💾 Backup 😉</footer>
+<div id="toast"></div>
+
+<footer>v3 · Quando la striscia in alto è rossa → premi 💾 Backup 😉</footer>
 
 <div class="modal" id="mForm">
  <div class="box">
@@ -219,6 +246,7 @@ let dati=JSON.parse(localStorage.getItem(KEY)||'{"items":[]}');
 if(!dati.items) dati.items=[];
 if(!dati.meta) dati.meta={ultimoBackup:null,modifiche:0,ogniGiorni:14};
 let precedente=JSON.stringify(dati);
+let vista=dati.meta.vista||'oggi';
 function save(nonContare){
   if(!nonContare) dati.meta.modifiche=(dati.meta.modifiche||0)+1;
   registraCopia(precedente);
@@ -249,11 +277,13 @@ function annullaUltima(){
   if(!c.length){alert('Non c\'è niente da annullare.');return;}
   if(!confirm('Tornare alla versione di '+fmtT(c[0].t)+' ('+c[0].n+' scadenze)?'))return;
   registraCopia(JSON.stringify(dati)); applicaStato(JSON.parse(c[0].payload)); mostraCopie();
+  toast('↩️ Annullato');
 }
 function ripristinaCopia(i){
   const c=leggiCopie(); if(!c[i])return;
   if(!confirm('Tornare alla versione di '+fmtT(c[i].t)+' con '+c[i].n+' scadenze?'))return;
   registraCopia(JSON.stringify(dati)); applicaStato(JSON.parse(c[i].payload)); mostraCopie();
+  toast('↩️ Versione ripristinata');
 }
 function mostraCopie(){
   const c=leggiCopie(), L=document.getElementById('listaCopie');
@@ -262,6 +292,15 @@ function mostraCopie(){
     <button onclick="ripristinaCopia(${i})">Ripristina</button></div>`).join('');
 }
 const fmtT=t=>new Date(t).toLocaleString('it-IT',{day:'2-digit',month:'2-digit',year:'2-digit',hour:'2-digit',minute:'2-digit'});
+
+/* ---------- TOAST ---------- */
+let toastTimer=null;
+function toast(msg){
+  const t=document.getElementById('toast');
+  t.textContent=msg; t.classList.add('on');
+  clearTimeout(toastTimer);
+  toastTimer=setTimeout(()=>t.classList.remove('on'),2600);
+}
 
 /* ---------- STRISCIA PROMEMORIA ---------- */
 function aggiornaBanner(){
@@ -288,6 +327,10 @@ function addMesi(iso,m){
   dt.setDate(Math.min(d,last));
   return dt.getFullYear()+'-'+String(dt.getMonth()+1).padStart(2,'0')+'-'+String(dt.getDate()).padStart(2,'0');
 }
+function addGiorni(iso,n){
+  const d=new Date(iso+'T00:00:00'); d.setDate(d.getDate()+n);
+  return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');
+}
 function giorniMancanti(iso){
   const a=new Date(iso+'T00:00:00'), b=new Date(oggiISO()+'T00:00:00');
   return Math.round((a-b)/86400000);
@@ -313,6 +356,15 @@ const MODELLI=[
  {n:'Abbonamento',c:'Abbonamenti',r:12,p:'20,5'}
 ];
 
+/* ---------- SCHEDE ---------- */
+function cambiaVista(v){
+  vista=v; dati.meta.vista=v;
+  localStorage.setItem(KEY,JSON.stringify(dati));
+  document.getElementById('tabOggi').classList.toggle('attiva',v==='oggi');
+  document.getElementById('tabTutte').classList.toggle('attiva',v==='tutte');
+  disegna(); window.scrollTo(0,0);
+}
+
 /* ---------- SCHERMO ---------- */
 function livello(g){ return g<0?0 : g<=7?1 : g<=30?2 : 3; }
 function testoBadge(g){
@@ -320,6 +372,21 @@ function testoBadge(g){
   if(g===0) return 'SCADE OGGI';
   if(g===1) return 'domani';
   return 'tra '+g+' giorni';
+}
+function cardHTML(i){
+  const g=giorniMancanti(i.data), l=livello(g), st=(i.storico||[]).length;
+  return `<div class="card c${l}">
+    <div class="row1"><div class="tit">${esc(i.tit)}</div><div class="badge b${l}">${testoBadge(g)}</div></div>
+    <div class="sub">${esc(i.sog||'—')} · ${esc(i.cat)} · <b>${itDate(i.data)}</b>${i.ric>0?' · ogni '+(i.ric%12===0?(i.ric/12)+' anno/i':i.ric+' mesi'):''}</div>
+    ${(i.note||i.km||i.costo)?`<div class="note">${[i.km?'🚗 '+esc(i.km):'',i.costo?'💶 ~'+esc(i.costo)+' €':'',i.note?esc(i.note):''].filter(Boolean).join(' · ')}</div>`:''}
+    ${st?`<div class="sub" style="margin-top:6px">📘 fatto ${st} volta/e · ultima: ${itDate(i.storico[st-1].data)}</div>`:''}
+    <div class="acts">
+      <button class="green" onclick="apriFatto('${i.id}')">✅ Fatto</button>
+      <button class="arancio" onclick="rimanda('${i.id}')">⏰ +7gg</button>
+      <button onclick="apriDuplica('${i.id}')" title="Duplica">📄</button>
+      <button onclick="apriForm('${i.id}')" title="Modifica">✏️</button>
+      <button onclick="elimina('${i.id}')" title="Elimina">🗑️</button>
+    </div></div>`;
 }
 function disegna(){
   const q=(document.getElementById('cerca').value||'').toLowerCase();
@@ -331,6 +398,7 @@ function disegna(){
 
   let items=[...dati.items].sort((a,b)=>a.data.localeCompare(b.data));
   const vis=items.filter(i=>(!fs||i.sog===fs)&&(!q||(i.tit+' '+i.sog+' '+i.cat+' '+(i.note||'')).toLowerCase().includes(q)));
+
   const sc=items.filter(i=>giorniMancanti(i.data)<0).length;
   const tra30=items.filter(i=>{const g=giorniMancanti(i.data);return g>=0&&g<=30;}).length;
   const spesa=items.reduce((s,i)=>s+(i.storico||[]).reduce((t,h)=>t+(parseFloat(h.costo)||0),0),0);
@@ -340,41 +408,65 @@ function disegna(){
      <div class="stat"><b style="color:#ef6c00">${tra30}</b><span>entro 30 giorni</span></div>
      <div class="stat"><b>${spesa.toFixed(0)} €</b><span>spesi finora</span></div>`;
 
+  const scadute=vis.filter(i=>giorniMancanti(i.data)<0);
+  const presto=vis.filter(i=>{const g=giorniMancanti(i.data);return g>=0&&g<=30;});
+  const dopo=vis.filter(i=>giorniMancanti(i.data)>30);
   const L=document.getElementById('lista');
-  if(!vis.length){
+
+  if(!dati.items.length){
     L.innerHTML='<div class="empty">Nessuna scadenza.<br>Premi <b>➕ Nuova scadenza</b> per iniziare.<br><br>'+
       '<span style="font-size:13px">Hai già i dati su un altro dispositivo?<br>Usa <b>🔁 Trasferisci</b>.</span></div>';
     return;
   }
-  L.innerHTML=vis.map(i=>{
-    const g=giorniMancanti(i.data), l=livello(g), st=(i.storico||[]).length;
-    return `<div class="card c${l}">
-      <div class="row1"><div class="tit">${esc(i.tit)}</div><div class="badge b${l}">${testoBadge(g)}</div></div>
-      <div class="sub">${esc(i.sog||'—')} · ${esc(i.cat)} · <b>${itDate(i.data)}</b>${i.ric>0?' · ogni '+(i.ric%12===0?(i.ric/12)+' anno/i':i.ric+' mesi'):''}</div>
-      ${(i.note||i.km||i.costo)?`<div class="note">${[i.km?'🚗 '+esc(i.km):'',i.costo?'💶 ~'+esc(i.costo)+' €':'',i.note?esc(i.note):''].filter(Boolean).join(' · ')}</div>`:''}
-      ${st?`<div class="sub" style="margin-top:6px">📘 fatto ${st} volta/e · ultima: ${itDate(i.storico[st-1].data)}</div>`:''}
-      <div class="acts">
-        <button class="green" onclick="apriFatto('${i.id}')">✅ Fatto</button>
-        <button onclick="apriForm('${i.id}')">✏️ Modifica</button>
-        <button onclick="elimina('${i.id}')">🗑️</button>
-      </div></div>`;
-  }).join('');
+  if(!vis.length){
+    L.innerHTML='<div class="empty">Nessun risultato.<br><span style="font-size:13px">Prova a cancellare la ricerca o il filtro nome.</span></div>';
+    return;
+  }
+
+  if(vista==='oggi' && !scadute.length && !presto.length){
+    L.innerHTML='<div class="empty">🎉<br><b>Tutto sotto controllo!</b><br>Niente di urgente nei prossimi 30 giorni.</div>'+
+      (dopo.length?`<button class="ghost wide" onclick="cambiaVista('tutte')">📚 Vedi anche le ${dopo.length} scadenze lontane</button>`:'');
+    return;
+  }
+
+  let H='';
+  if(scadute.length) H+='<div class="sez">🔴 Scadute — da sistemare</div>'+scadute.map(cardHTML).join('');
+  if(presto.length)  H+='<div class="sez">📅 Prossimi 30 giorni</div>'+presto.map(cardHTML).join('');
+  if(vista==='tutte' && dopo.length) H+='<div class="sez">🍃 Più avanti</div>'+dopo.map(cardHTML).join('');
+  if(vista==='oggi' && dopo.length)
+    H+=`<button class="ghost wide" style="margin-top:12px" onclick="cambiaVista('tutte')">📚 Vedi anche le ${dopo.length} scadenze lontane</button>`;
+  L.innerHTML=H;
 }
 const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 /* ---------- FORM ---------- */
-let idCorrente=null;
-function apriForm(id){
-  idCorrente=id||null;
-  document.getElementById('formTitolo').textContent=id?'Modifica scadenza':'Nuova scadenza';
+let idCorrente=null, duplicando=false;
+function riempiChips(){
   document.getElementById('chips').innerHTML=MODELLI.map((m,k)=>`<span class="chip" onclick="usaModello(${k})">${m.n}</span>`).join('');
-  const i=id?dati.items.find(x=>x.id===id):null;
+}
+function riempiCampi(i){
   V('f_tit',i?i.tit:''); V('f_sog',i?i.sog:''); V('f_cat',i?i.cat:'Auto/Moto');
   V('f_data',i?i.data:oggiISO()); V('f_ric',i?i.ric:'12');
   V('f_pre',i?(i.pre||[]).join(', '):'30, 7, 1');
   V('f_cos',i?i.costo:''); V('f_km',i?i.km:''); V('f_note',i?i.note:'');
   document.getElementById('f_base').checked=i?!!i.daFatto:false;
+}
+function apriForm(id){
+  idCorrente=id||null; duplicando=false;
+  document.getElementById('formTitolo').textContent=id?'✏️ Modifica scadenza':'➕ Nuova scadenza';
+  riempiChips();
+  riempiCampi(id?dati.items.find(x=>x.id===id):null);
   apri('mForm');
+}
+function apriDuplica(id){
+  const i=dati.items.find(x=>x.id===id);
+  idCorrente=null; duplicando=true;
+  document.getElementById('formTitolo').textContent='📄 Duplica: '+i.tit;
+  riempiChips();
+  riempiCampi(i);
+  document.getElementById('f_sog').value='';
+  apri('mForm');
+  setTimeout(()=>{document.getElementById('f_sog').focus();},400);
 }
 function usaModello(k){
   const m=MODELLI[k];
@@ -394,6 +486,15 @@ function salvaForm(){
   if(!o.pre.length) o.pre=[30,7,1];
   if(idCorrente) dati.items=dati.items.map(x=>x.id===idCorrente?o:x); else dati.items.push(o);
   save(); chiudi('mForm'); disegna();
+  if(duplicando){ toast('📄 Copia creata!'); duplicando=false; }
+}
+
+/* ---------- RIMANDA ---------- */
+function rimanda(id){
+  const i=dati.items.find(x=>x.id===id);
+  i.data=addGiorni(i.data,7);
+  save(); disegna();
+  toast('⏰ Rimandata al '+itDate(i.data));
 }
 
 /* ---------- FATTO ---------- */
@@ -410,6 +511,7 @@ function confermaFatto(){
   i.storico.push({data:g('d_data'),costo:g('d_costo'),km:g('d_km')});
   if(i.ric>0){
     i.data=addMesi(i.daFatto?g('d_data'):i.data,i.ric);
+    toast('✅ Fatto! Prossima: '+itDate(i.data));
     alert('Fatto! ✅\nProssima scadenza: '+itDate(i.data)+'\n\nRicordati di premere "📅 Invia al Calendario".');
   }else if(confirm('Questa scadenza non si ripete. Eliminarla?')){
     dati.items=dati.items.filter(x=>x.id!==idFatto);
@@ -420,6 +522,7 @@ function elimina(id){
   const i=dati.items.find(x=>x.id===id);
   if(confirm('Eliminare "'+i.tit+'"?\n\n(Recuperabile da 🛡️ Sicurezza)')){
     dati.items=dati.items.filter(x=>x.id!==id); save(); disegna();
+    toast('🗑️ Eliminata — recuperabile da 🛡️ Sicurezza');
   }
 }
 
@@ -491,9 +594,9 @@ function copiaTutto(){
   const t=document.getElementById('tArea');
   t.value=JSON.stringify(dati); t.focus(); t.select(); t.setSelectionRange(0,999999);
   let ok=false; try{ ok=document.execCommand('copy'); }catch(e){}
-  if(!ok&&navigator.clipboard){ navigator.clipboard.writeText(t.value).then(()=>alert('📋 Copiato!'),
+  if(!ok&&navigator.clipboard){ navigator.clipboard.writeText(t.value).then(()=>toast('📋 Copiato!'),
     ()=>alert('Seleziona il testo e copialo a mano.')); }
-  else alert(ok?'📋 Copiato! Incollalo dove vuoi.':'Seleziona il testo e copialo a mano.');
+  else toast(ok?'📋 Copiato! Incollalo dove vuoi.':'Seleziona il testo e copialo a mano.');
 }
 function caricaIncollato(){
   const v=g('tArea').trim();
@@ -504,7 +607,7 @@ function caricaIncollato(){
     if(!confirm('Sostituire i dati di questo dispositivo con i '+d.items.length+' elementi incollati?'))return;
     registraCopia(JSON.stringify(dati));
     if(!d.meta)d.meta={ultimoBackup:null,modifiche:0,ogniGiorni:14};
-    applicaStato(d); chiudi('mTra'); alert('Caricato! ✅');
+    applicaStato(d); chiudi('mTra'); toast('Caricato! ✅');
   }catch(e){ alert('Testo non valido. Copialo tutto, dall\'inizio alla fine.'); }
 }
 
@@ -513,6 +616,10 @@ const g=id=>document.getElementById(id).value;
 const V=(id,v)=>document.getElementById(id).value=v??'';
 const apri=id=>document.getElementById(id).classList.add('on');
 const chiudi=id=>document.getElementById(id).classList.remove('on');
+
+/* ---------- AVVIO ---------- */
+document.getElementById('tabOggi').classList.toggle('attiva',vista==='oggi');
+document.getElementById('tabTutte').classList.toggle('attiva',vista!=='oggi');
 disegna(); aggiornaBanner();
 </script>
 </body>
