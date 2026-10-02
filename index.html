@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- SCADENZE FAMIGLIA — versione 4 (regole italiane automatiche) -->
+<!-- SCADENZE FAMIGLIA — versione 5 (menu ☰ + suggerimenti automatici) -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -26,15 +26,25 @@ button:active{filter:brightness(.92)}
 .primary{background:#1f3a5f;color:#fff}
 .green{background:#1d8a4e;color:#fff}
 .ghost{background:#fff;border:1px solid #d3d9e2}
-.inst{background:#7b1fa2;color:#fff;display:none}
 .arancio{background:#ef6c00;color:#fff}
 input,select,textarea{font-family:inherit;font-size:16px;width:100%;padding:11px;border:1px solid #cbd3de;border-radius:9px;background:#fff}
 label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px;color:#44536b}
+/* ---- MENU A TENDINA ---- */
+.menuwrap{position:relative;display:inline-block}
+.menu{position:absolute;top:calc(100% + 6px);left:0;background:#fff;border:1px solid #d3d9e2;border-radius:12px;
+      box-shadow:0 8px 24px rgba(0,0,0,.18);display:none;min-width:240px;z-index:50;overflow:hidden;padding:4px}
+.menu.on{display:block}
+.menu button{display:block;width:100%;text-align:left;border-radius:8px;padding:13px 14px;font-size:15px;
+             background:#fff;border-bottom:1px solid #eef1f6;margin:0}
+.menu button:last-child{border-bottom:0}
+.menu button:active{background:#eef1f6}
+/* ---- SCHEDE ---- */
 .tabs{display:flex;gap:8px;margin-bottom:12px}
 .tab{flex:1;padding:13px 10px;font-size:16px;font-weight:700;border-radius:11px;background:#e7eaf0;color:#44536b}
 .tab.attiva{background:#1f3a5f;color:#fff}
 .sez{font-size:12px;font-weight:800;letter-spacing:.5px;color:#7a8699;margin:18px 2px 8px;text-transform:uppercase}
 .wide{width:100%;padding:13px;font-size:15px;margin-top:4px}
+/* ---- STRISCIA BACKUP ---- */
 .banner{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
         border-radius:11px;padding:12px 14px;margin-bottom:12px;font-size:14px;line-height:1.4}
 .rosso{background:#fdecea;border:1px solid #f0a9a0;color:#8c1d13;animation:pulsa 2.2s infinite}
@@ -42,10 +52,12 @@ label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px;color:#4453
 .verde{background:#e9f7ee;border:1px solid #b2dfc2;color:#1a5c2a}
 @keyframes pulsa{0%,100%{box-shadow:0 0 0 0 rgba(198,40,40,0)}50%{box-shadow:0 0 0 5px rgba(198,40,40,.13)}}
 .bbtn{background:#1f3a5f;color:#fff;white-space:nowrap}
+/* ---- STATISTICHE ---- */
 .stats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
 .stat{background:#fff;border-radius:11px;padding:10px 14px;flex:1;min-width:120px;border:1px solid #e3e8ef}
 .stat b{display:block;font-size:22px}
 .stat span{font-size:12px;color:#66748c}
+/* ---- CARD ---- */
 .card{background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;border-left:7px solid #ccc;box-shadow:0 1px 3px rgba(0,0,0,.06)}
 .c0{border-left-color:#c62828;background:#fff2f2}
 .c1{border-left-color:#ef6c00}
@@ -59,6 +71,7 @@ label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px;color:#4453
 .note{font-size:13px;margin-top:7px;background:#f7f9fc;padding:8px 10px;border-radius:7px}
 .acts{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
 .acts button{padding:11px 13px;font-size:14px;min-height:46px}
+/* ---- MODALI ---- */
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;padding:16px;overflow:auto;z-index:9}
 .modal.on{display:flex}
 .box{background:#fff;border-radius:14px;padding:18px;max-width:560px;width:100%;margin-bottom:40px}
@@ -101,12 +114,17 @@ footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
   <div class="bar">
     <button class="primary" onclick="apriForm()">➕ Nuova scadenza</button>
     <button class="ghost" onclick="apriCalc()">🇮🇹 Regole IT</button>
-    <button class="green" onclick="esportaICS()">📅 Invia al Calendario</button>
-    <button class="ghost" onclick="backup()">💾 Backup</button>
-    <button class="ghost" onclick="document.getElementById('fileIn').click()">📂 Ripristina</button>
-    <button class="ghost" onclick="apriSicurezza()">🛡️ Sicurezza</button>
-    <button class="ghost" onclick="apriTrasf()">🔁 Trasferisci</button>
-    <button class="inst" id="btnInst" onclick="installa()">📲 Installa app</button>
+    <span class="menuwrap">
+      <button class="ghost" onclick="toggleMenu(event)">☰ Menu ▾</button>
+      <span class="menu" id="menuAltro">
+        <button onclick="menuAz(esportaICS)">📅 Invia al Calendario</button>
+        <button onclick="menuAz(backup)">💾 Backup</button>
+        <button onclick="menuAz(()=>document.getElementById('fileIn').click())">📂 Ripristina</button>
+        <button onclick="menuAz(apriSicurezza)">🛡️ Sicurezza</button>
+        <button onclick="menuAz(apriTrasf)">🔁 Trasferisci</button>
+        <button class="inst" id="btnInst" onclick="menuAz(installa)" style="display:none">📲 Installa app</button>
+      </span>
+    </span>
     <input type="file" id="fileIn" accept=".json" style="display:none" onchange="ripristina(event)">
   </div>
 
@@ -120,7 +138,7 @@ footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
 
 <div id="toast"></div>
 
-<footer>v4 · Quando la striscia in alto è rossa → premi 💾 Backup 😉</footer>
+<footer>v5 · Quando la striscia in alto è rossa → ☰ Menu → 💾 Backup 😉</footer>
 
 <div class="modal" id="mForm">
  <div class="box">
@@ -129,7 +147,8 @@ footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
   <div class="hint">Scegli un modello pronto:</div>
   <div class="chips" id="chips"></div>
   <label>Che cosa scade?</label>
-  <input id="f_tit" placeholder="Es. Revisione">
+  <input id="f_tit" placeholder="Es. Revisione" list="titList">
+  <datalist id="titList"></datalist>
   <label>Di chi / di cosa?</label>
   <input id="f_sog" placeholder="Es. Panda GG123AA — oppure: Mario" list="sogList">
   <datalist id="sogList"></datalist>
@@ -273,13 +292,25 @@ if('serviceWorker' in navigator){
 let promptInstall=null;
 addEventListener('beforeinstallprompt',e=>{
   e.preventDefault(); promptInstall=e;
-  document.getElementById('btnInst').style.display='inline-block';
+  document.getElementById('btnInst').style.display='block';
 });
 function installa(){
   if(!promptInstall){alert('Usa il menu del browser → "Aggiungi a schermata Home".');return;}
   promptInstall.prompt(); promptInstall=null;
   document.getElementById('btnInst').style.display='none';
 }
+
+/* ---------- MENU A TENDINA ---------- */
+function toggleMenu(e){
+  e.stopPropagation();
+  document.getElementById('menuAltro').classList.toggle('on');
+}
+function chiudiMenu(){ document.getElementById('menuAltro').classList.remove('on'); }
+function menuAz(fn){ chiudiMenu(); if(typeof fn==='function') fn(); }
+document.addEventListener('click',ev=>{
+  const m=document.getElementById('menuAltro');
+  if(m && m.classList.contains('on') && !m.contains(ev.target)) m.classList.remove('on');
+});
 
 /* ---------- MEMORIA ---------- */
 const KEY='scadenzeFamiglia_v1', KEYC='scadenzeFamiglia_copie';
@@ -415,7 +446,7 @@ function stimaKm(i){
   const pts=(i.storico||[]).filter(h=>parseFloat(h.km)>0)
     .map(h=>({d:h.data,k:parseFloat(h.km)})).sort((a,b)=>a.d.localeCompare(b.d));
   if(!pts.length) return null;
-  let rate=12000/365; // media italiana se ho un solo punto
+  let rate=12000/365;
   if(pts.length>=2){
     const a=pts[0], b=pts[pts.length-1];
     const gg=(new Date(b.d+'T00:00:00')-new Date(a.d+'T00:00:00'))/86400000;
@@ -497,10 +528,13 @@ function cardHTML(i){
 function disegna(){
   const q=(document.getElementById('cerca').value||'').toLowerCase();
   const fs=document.getElementById('filtroSog').value;
-  const sogg=[...new Set(dati.items.map(i=>i.sog).filter(Boolean))].sort();
+  const sogg=[...new Set(dati.items.map(i=>i.sog).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'it'));
   document.getElementById('filtroSog').innerHTML='<option value="">👥 Tutti</option>'+
-    sogg.map(s=>`<option ${s===fs?'selected':''}>${s}</option>`).join('');
-  document.getElementById('sogList').innerHTML=sogg.map(s=>`<option value="${s}">`).join('');
+    sogg.map(s=>`<option ${s===fs?'selected':''}>${esc(s)}</option>`).join('');
+  document.getElementById('sogList').innerHTML=sogg.map(s=>`<option value="${esc(s)}">`).join('');
+  /* suggerimenti titoli: si aggiornano da soli a ogni scadenza scritta */
+  const tits=[...new Set(dati.items.map(i=>i.tit).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'it'));
+  document.getElementById('titList').innerHTML=tits.map(t=>`<option value="${esc(t)}">`).join('');
 
   let items=[...dati.items].sort((a,b)=>a.data.localeCompare(b.data));
   const vis=items.filter(i=>(!fs||i.sog===fs)&&(!q||(i.tit+' '+i.sog+' '+i.cat+' '+(i.note||'')).toLowerCase().includes(q)));
@@ -521,7 +555,7 @@ function disegna(){
 
   if(!dati.items.length){
     L.innerHTML='<div class="empty">Nessuna scadenza.<br>Premi <b>➕ Nuova scadenza</b> oppure <b>🇮🇹 Regole IT</b> per iniziare.<br><br>'+
-      '<span style="font-size:13px">Hai già i dati su un altro dispositivo?<br>Usa <b>🔁 Trasferisci</b>.</span></div>';
+      '<span style="font-size:13px">Hai già i dati su un altro dispositivo?<br>Usa <b>☰ Menu → 🔁 Trasferisci</b>.</span></div>';
     return;
   }
   if(!vis.length){
@@ -683,7 +717,6 @@ function confermaFatto(){
   i.storico=i.storico||[];
   i.storico.push({data:g('d_data'),costo:g('d_costo'),km:g('d_km')});
   if(i.spec){
-    /* 🇮🇹 regole italiane: ricalcolo automatico */
     if(i.spec==='revisione'){ i.data=fineMese(addMesi(i.data,24)); }
     else if(i.spec==='bollo'){ i.data=fineMese(addMesi(i.data,12)); }
     else if(i.spec==='patente'){
@@ -692,11 +725,11 @@ function confermaFatto(){
     }
     toast('✅ Fatto! Prossima: '+itDate(i.data));
     alert('Fatto! ✅\nNuova scadenza calcolata con la regola italiana 🇮🇹: '+itDate(i.data)+
-          '\n\nRicordati di premere "📅 Invia al Calendario".');
+          '\n\nRicordati di premere ☰ Menu → "📅 Invia al Calendario".');
   }else if(i.ric>0){
     i.data=addMesi(i.daFatto?g('d_data'):i.data,i.ric);
     toast('✅ Fatto! Prossima: '+itDate(i.data));
-    alert('Fatto! ✅\nProssima scadenza: '+itDate(i.data)+'\n\nRicordati di premere "📅 Invia al Calendario".');
+    alert('Fatto! ✅\nProssima scadenza: '+itDate(i.data)+'\n\nRicordati di premere ☰ Menu → "📅 Invia al Calendario".');
   }else if(confirm('Questa scadenza non si ripete. Eliminarla?')){
     dati.items=dati.items.filter(x=>x.id!==idFatto);
   }
@@ -704,7 +737,7 @@ function confermaFatto(){
 }
 function elimina(id){
   const i=dati.items.find(x=>x.id===id);
-  if(confirm('Eliminare "'+i.tit+'"?\n\n(Recuperabile da 🛡️ Sicurezza)')){
+  if(confirm('Eliminare "'+i.tit+'"?\n\n(Recuperabile da ☰ Menu → 🛡️ Sicurezza)')){
     dati.items=dati.items.filter(x=>x.id!==id); save(); disegna();
     toast('🗑️ Eliminata — recuperabile da 🛡️ Sicurezza');
   }
