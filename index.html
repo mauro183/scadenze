@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- SCADENZE FAMIGLIA — versione 6 (modelli a tendina) -->
+<!-- SCADENZE FAMIGLIA — versione 7 (scheda Da fare) -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -40,7 +40,7 @@ label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px;color:#4453
 .menu button:active{background:#eef1f6}
 /* ---- SCHEDE ---- */
 .tabs{display:flex;gap:8px;margin-bottom:12px}
-.tab{flex:1;padding:13px 10px;font-size:16px;font-weight:700;border-radius:11px;background:#e7eaf0;color:#44536b}
+.tab{flex:1;padding:13px 6px;font-size:15px;font-weight:700;border-radius:11px;background:#e7eaf0;color:#44536b}
 .tab.attiva{background:#1f3a5f;color:#fff}
 .sez{font-size:12px;font-weight:800;letter-spacing:.5px;color:#7a8699;margin:18px 2px 8px;text-transform:uppercase}
 .wide{width:100%;padding:13px;font-size:15px;margin-top:4px}
@@ -71,6 +71,15 @@ label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px;color:#4453
 .note{font-size:13px;margin-top:7px;background:#f7f9fc;padding:8px 10px;border-radius:7px}
 .acts{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
 .acts button{padding:11px 13px;font-size:14px;min-height:46px}
+/* ---- LISTA DA FARE ---- */
+.todoRow{display:flex;align-items:center;gap:10px;background:#fff;border-radius:12px;padding:12px 14px;
+         margin-bottom:8px;border:1px solid #e3e8ef;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.todoRow .ck{width:34px;height:34px;border-radius:50%;border:2px solid #cbd3de;background:#fff;
+             font-size:17px;line-height:1;flex:none;padding:0;color:transparent}
+.todoRow .ck.on{background:#1d8a4e;border-color:#1d8a4e;color:#fff}
+.ttesto{font-size:15px;word-break:break-word}
+.todoFatta{opacity:.6}
+.todoFatta .ttesto{text-decoration:line-through;color:#8b95a7}
 /* ---- MODALI ---- */
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;padding:16px;overflow:auto;z-index:9}
 .modal.on{display:flex}
@@ -104,6 +113,7 @@ footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
 
   <div class="tabs">
     <button id="tabOggi" class="tab attiva" onclick="cambiaVista('oggi')">🏠 Oggi</button>
+    <button id="tabDa" class="tab" onclick="cambiaVista('dafare')">✅ Da fare</button>
     <button id="tabTutte" class="tab" onclick="cambiaVista('tutte')">📚 Tutte</button>
   </div>
 
@@ -126,7 +136,7 @@ footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
     <input type="file" id="fileIn" accept=".json" style="display:none" onchange="ripristina(event)">
   </div>
 
-  <div class="bar">
+  <div class="bar" id="barraRicerca">
     <input id="cerca" placeholder="🔎 Cerca..." oninput="disegna()" style="flex:2;min-width:160px">
     <select id="filtroSog" onchange="disegna()" style="flex:1;min-width:140px"></select>
   </div>
@@ -136,7 +146,7 @@ footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
 
 <div id="toast"></div>
 
-<footer>v6 · Quando la striscia in alto è rossa → ☰ Menu → 💾 Backup 😉</footer>
+<footer>v7 · Quando la striscia in alto è rossa → ☰ Menu → 💾 Backup 😉</footer>
 
 <div class="modal" id="mForm">
  <div class="box">
@@ -316,6 +326,7 @@ document.addEventListener('click',ev=>{
 const KEY='scadenzeFamiglia_v1', KEYC='scadenzeFamiglia_copie';
 let dati=JSON.parse(localStorage.getItem(KEY)||'{"items":[]}');
 if(!dati.items) dati.items=[];
+if(!dati.todo) dati.todo=[];
 if(!dati.meta) dati.meta={ultimoBackup:null,modifiche:0,ogniGiorni:14};
 let precedente=JSON.stringify(dati);
 let vista=dati.meta.vista||'oggi';
@@ -340,6 +351,7 @@ function registraCopia(payload){
 function applicaStato(obj){
   dati=obj;
   if(!dati.items) dati.items=[];
+  if(!dati.todo) dati.todo=[];
   if(!dati.meta) dati.meta={ultimoBackup:null,modifiche:0,ogniGiorni:14};
   localStorage.setItem(KEY,JSON.stringify(dati));
   precedente=JSON.stringify(dati); disegna(); aggiornaBanner();
@@ -377,7 +389,7 @@ function toast(msg){
 /* ---------- STRISCIA PROMEMORIA ---------- */
 function aggiornaBanner(){
   const b=document.getElementById('banner');
-  if(!dati.items.length){b.style.display='none';return;}
+  if(!dati.items.length && !dati.todo.length){b.style.display='none';return;}
   b.style.display='flex';
   const ogni=parseInt(dati.meta.ogniGiorni||14), mod=dati.meta.modifiche||0, ub=dati.meta.ultimoBackup;
   const g=ub?Math.floor((Date.now()-new Date(ub).getTime())/86400000):null;
@@ -487,8 +499,75 @@ function cambiaVista(v){
   vista=v; dati.meta.vista=v;
   localStorage.setItem(KEY,JSON.stringify(dati));
   document.getElementById('tabOggi').classList.toggle('attiva',v==='oggi');
+  document.getElementById('tabDa').classList.toggle('attiva',v==='dafare');
   document.getElementById('tabTutte').classList.toggle('attiva',v==='tutte');
   disegna(); window.scrollTo(0,0);
+}
+
+/* ---------- LISTA DA FARE ---------- */
+function aggiornaTabTodo(){
+  const n=dati.todo.filter(t=>!t.fatta).length;
+  document.getElementById('tabDa').textContent = n ? '✅ Da fare ('+n+')' : '✅ Da fare';
+}
+function addTodo(){
+  const el=document.getElementById('todoIn');
+  const v=(el.value||'').trim();
+  if(!v){ el.focus(); return; }
+  dati.todo.push({id:'t'+Date.now(),testo:v,fatta:false,creata:oggiISO()});
+  save(); disegnaTodo(); aggiornaTabTodo();
+  toast('➕ Aggiunto alla lista');
+}
+function toggleTodo(id){
+  const t=dati.todo.find(x=>x.id===id); if(!t)return;
+  t.fatta=!t.fatta;
+  if(t.fatta) t.fattaData=oggiISO(); else delete t.fattaData;
+  save(); disegnaTodo(); aggiornaTabTodo();
+  toast(t.fatta?'✓ Fatto!':'↩️ Di nuovo da fare');
+}
+function delTodo(id){
+  dati.todo=dati.todo.filter(x=>x.id!==id);
+  save(); disegnaTodo(); aggiornaTabTodo();
+  toast('🗑️ Eliminato — recuperabile da 🛡️ Sicurezza');
+}
+function pulisciFatte(){
+  const n=dati.todo.filter(t=>t.fatta).length;
+  if(!n)return;
+  if(!confirm('Eliminare le '+n+' cose già fatte?'))return;
+  dati.todo=dati.todo.filter(t=>!t.fatta);
+  save(); disegnaTodo(); aggiornaTabTodo();
+  toast('🧹 Lista pulita');
+}
+function todoAppuntamento(id){
+  const t=dati.todo.find(x=>x.id===id); if(!t)return;
+  apriForm(null);
+  pendingTodoId=id;
+  V('f_tit',t.testo);
+  document.getElementById('f_data').value=oggiISO();
+}
+function todoHTML(t){
+  return `<div class="todoRow ${t.fatta?'todoFatta':''}">
+    <button class="ck ${t.fatta?'on':''}" onclick="toggleTodo('${t.id}')">✓</button>
+    <div class="ttesto" style="flex:1">${esc(t.testo)}</div>
+    <button onclick="todoAppuntamento('${t.id}')" title="Trasforma in appuntamento">🗓️</button>
+    <button onclick="delTodo('${t.id}')" title="Elimina">🗑️</button>
+  </div>`;
+}
+function disegnaTodo(){
+  const L=document.getElementById('lista');
+  const da=dati.todo.filter(t=>!t.fatta), fa=dati.todo.filter(t=>t.fatta);
+  let H=`<div class="bar"><input id="todoIn" placeholder="✏️ Cosa devi preparare? Es. trovare il libretto..."
+          onkeydown="if(event.key==='Enter')addTodo()" style="flex:3;min-width:200px">
+          <button class="primary" onclick="addTodo()">➕ Aggiungi</button></div>`;
+  if(!dati.todo.length){
+    H+='<div class="empty">Nessun promemoria.<br>Scrivi qui le cose da fare <b>prima</b> di fissare un appuntamento.<br>'+
+       '<span style="font-size:13px">Es: "chiamare officina", "ritirare referto", "chiedere permesso al lavoro".<br>'+
+       'Quando tutto è pronto: premi <b>🗓️</b> e diventa una scadenza vera, con avvisi sul telefono.</span></div>';
+    L.innerHTML=H; return;
+  }
+  if(da.length) H+='<div class="sez">🔴 Da fare</div>'+da.map(todoHTML).join('');
+  if(fa.length) H+='<div class="sez">✅ Fatte</div>'+fa.map(todoHTML).join('')+
+    `<button class="ghost wide" style="margin-top:10px" onclick="pulisciFatte()">🧹 Svuota le fatte</button>`;
+  L.innerHTML=H;
 }
 
 /* ---------- SCHERMO ---------- */
@@ -526,6 +605,16 @@ function cardHTML(i){
     </div></div>`;
 }
 function disegna(){
+  aggiornaTabTodo();
+  const L=document.getElementById('lista');
+  const stats=document.getElementById('stats');
+  const barra=document.getElementById('barraRicerca');
+  if(vista==='dafare'){
+    stats.style.display='none'; barra.style.display='none';
+    disegnaTodo(); return;
+  }
+  stats.style.display='flex'; barra.style.display='flex';
+
   const q=(document.getElementById('cerca').value||'').toLowerCase();
   const fs=document.getElementById('filtroSog').value;
   const sogg=[...new Set(dati.items.map(i=>i.sog).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'it'));
@@ -541,7 +630,7 @@ function disegna(){
   const sc=items.filter(i=>giorniMancanti(i.data)<0).length;
   const tra30=items.filter(i=>{const g=giorniMancanti(i.data);return g>=0&&g<=30;}).length;
   const spesa=items.reduce((s,i)=>s+(i.storico||[]).reduce((t,h)=>t+(parseFloat(h.costo)||0),0),0);
-  document.getElementById('stats').innerHTML=
+  stats.innerHTML=
     `<div class="stat"><b>${items.length}</b><span>scadenze seguite</span></div>
      <div class="stat"><b style="color:#c62828">${sc}</b><span>già scadute</span></div>
      <div class="stat"><b style="color:#ef6c00">${tra30}</b><span>entro 30 giorni</span></div>
@@ -550,7 +639,6 @@ function disegna(){
   const scadute=vis.filter(i=>giorniMancanti(i.data)<0);
   const presto=vis.filter(i=>{const g=giorniMancanti(i.data);return g>=0&&g<=30;});
   const dopo=vis.filter(i=>giorniMancanti(i.data)>30);
-  const L=document.getElementById('lista');
 
   if(!dati.items.length){
     L.innerHTML='<div class="empty">Nessuna scadenza.<br>Premi <b>➕ Nuova scadenza</b> oppure <b>🇮🇹 Regole IT</b> per iniziare.<br><br>'+
@@ -579,7 +667,7 @@ function disegna(){
 const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
 /* ---------- FORM ---------- */
-let idCorrente=null, duplicando=false, specPending=null, dnPending=null;
+let idCorrente=null, duplicando=false, specPending=null, dnPending=null, pendingTodoId=null;
 function riempiChips(){
   document.getElementById('f_modello').innerHTML='<option value="">— Scegli un modello (facoltativo) —</option>'+
     MODELLI.map((m,k)=>`<option value="${k}">${m.n}</option>`).join('');
@@ -596,7 +684,7 @@ function gestisciSpecUI(){
   document.getElementById('labBase').style.display  = specPending?'none':'flex';
 }
 function apriForm(id){
-  idCorrente=id||null; duplicando=false;
+  idCorrente=id||null; duplicando=false; pendingTodoId=null;
   const i=id?dati.items.find(x=>x.id===id):null;
   specPending=i?(i.spec||null):null;
   dnPending=i?(i.dn||null):null;
@@ -606,7 +694,7 @@ function apriForm(id){
 }
 function apriDuplica(id){
   const i=dati.items.find(x=>x.id===id);
-  idCorrente=null; duplicando=true; specPending=null; dnPending=null;
+  idCorrente=null; duplicando=true; specPending=null; dnPending=null; pendingTodoId=null;
   document.getElementById('formTitolo').textContent='📄 Duplica: '+i.tit;
   riempiChips(); riempiCampi(i);
   document.getElementById('f_sog').value='';
@@ -633,10 +721,16 @@ function salvaForm(){
     storico:idCorrente?(dati.items.find(x=>x.id===idCorrente).storico||[]):[]};
   if(!o.pre.length) o.pre=[30,7,1];
   if(specPending){ o.spec=specPending; if(dnPending) o.dn=dnPending; o.daFatto=false; }
+  let convertito=false;
+  if(pendingTodoId){
+    dati.todo=dati.todo.filter(x=>x.id!==pendingTodoId);
+    pendingTodoId=null; convertito=true;
+  }
   if(idCorrente) dati.items=dati.items.map(x=>x.id===idCorrente?o:x); else dati.items.push(o);
   specPending=null; dnPending=null;
   save(); chiudi('mForm'); disegna();
   if(duplicando){ toast('📄 Copia creata!'); duplicando=false; }
+  else if(convertito){ toast('🗓️ Promemoria diventato appuntamento!'); }
 }
 
 /* ---------- CALCOLATORI ITALIANI ---------- */
@@ -776,7 +870,7 @@ function esportaICS(){
 
 /* ---------- BACKUP ---------- */
 function backup(){
-  if(!dati.items.length){alert('Non c\'è ancora niente da salvare.');return;}
+  if(!dati.items.length && !dati.todo.length){alert('Non c\'è ancora niente da salvare.');return;}
   dati.meta.ultimoBackup=new Date().toISOString(); dati.meta.modifiche=0;
   localStorage.setItem(KEY,JSON.stringify(dati)); precedente=JSON.stringify(dati);
   scarica('backup-scadenze-'+oggiISO()+'.json',JSON.stringify(dati,null,1),'application/json');
@@ -834,11 +928,15 @@ function caricaIncollato(){
 const g=id=>document.getElementById(id).value;
 const V=(id,v)=>document.getElementById(id).value=v??'';
 const apri=id=>document.getElementById(id).classList.add('on');
-const chiudi=id=>document.getElementById(id).classList.remove('on');
+const chiudi=id=>{
+  document.getElementById(id).classList.remove('on');
+  if(id==='mForm') pendingTodoId=null;
+};
 
 /* ---------- AVVIO ---------- */
 document.getElementById('tabOggi').classList.toggle('attiva',vista==='oggi');
-document.getElementById('tabTutte').classList.toggle('attiva',vista!=='oggi');
+document.getElementById('tabDa').classList.toggle('attiva',vista==='dafare');
+document.getElementById('tabTutte').classList.toggle('attiva',vista==='tutte');
 disegna(); aggiornaBanner();
 </script>
 </body>
