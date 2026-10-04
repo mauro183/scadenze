@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- SCADENZE FAMIGLIA — versione 7 (scheda Da fare) -->
+<!-- SCADENZE FAMIGLIA — versione 8 (orario, promemoria calendario, rinomina, stampa) -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -86,6 +86,7 @@ label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px;color:#4453
 .box{background:#fff;border-radius:14px;padding:18px;max-width:560px;width:100%;margin-bottom:40px}
 .box h2{margin:0 0 6px;font-size:19px}
 .two{display:flex;gap:10px}.two>div{flex:1}
+.three{display:flex;gap:10px;flex-wrap:wrap}.three>div{flex:1;min-width:130px}
 .hint{font-size:12px;color:#7a8699;margin-top:3px}
 .empty{text-align:center;padding:34px 16px;color:#7a8699;line-height:1.7;font-size:16px}
 .copia{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#f7f9fc;border:1px solid #e3e8ef;border-radius:9px;padding:9px 11px;margin-bottom:7px;font-size:13px}
@@ -97,6 +98,21 @@ label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px;color:#4453
        padding:13px 20px;border-radius:26px;font-size:14px;opacity:0;transition:.25s;z-index:99;max-width:92%;
        text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.35);pointer-events:none}
 #toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+/* ---- STAMPA ---- */
+#stampa{display:none}
+.tabSt{font-size:24px;font-weight:800}
+.tabSub{font-size:12px;color:#555;margin:2px 0 4px}
+.tabMe{font-weight:800;font-size:16px;margin:16px 0 6px;border-bottom:2px solid #333;padding-bottom:3px}
+#stampa table{width:100%;border-collapse:collapse;margin:0 0 8px}
+#stampa td{border:1px solid #bbb;padding:7px 9px;vertical-align:top;font-size:13px}
+.tabDt{white-space:nowrap;width:70px;text-align:center}
+.tabCo{white-space:nowrap;width:70px;text-align:right}
+.tabRp{color:#666;font-size:11px}
+@media print{
+  body{background:#fff;padding:0}
+  header,.wrap,#toast,footer,.banner{display:none!important}
+  #stampa{display:block!important;padding:10px}
+}
 footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
 </style>
 </head>
@@ -110,6 +126,7 @@ footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
 <div class="wrap">
 
   <div class="banner" id="banner" style="display:none"></div>
+  <div class="banner" id="bannerCal" style="display:none"></div>
 
   <div class="tabs">
     <button id="tabOggi" class="tab attiva" onclick="cambiaVista('oggi')">🏠 Oggi</button>
@@ -126,6 +143,7 @@ footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
       <button class="ghost" onclick="toggleMenu(event)">☰ Menu ▾</button>
       <span class="menu" id="menuAltro">
         <button onclick="menuAz(esportaICS)">📅 Invia al Calendario</button>
+        <button onclick="menuAz(stampa)">🖨️ Stampa riepilogo</button>
         <button onclick="menuAz(backup)">💾 Backup</button>
         <button onclick="menuAz(()=>document.getElementById('fileIn').click())">📂 Ripristina</button>
         <button onclick="menuAz(apriSicurezza)">🛡️ Sicurezza</button>
@@ -139,14 +157,16 @@ footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
   <div class="bar" id="barraRicerca">
     <input id="cerca" placeholder="🔎 Cerca..." oninput="disegna()" style="flex:2;min-width:160px">
     <select id="filtroSog" onchange="disegna()" style="flex:1;min-width:140px"></select>
+    <button class="ghost" onclick="apriRin()" title="Rinomina una persona/veicolo in tutte le scadenze">✏️</button>
   </div>
 
   <div id="lista"></div>
 </div>
 
+<div id="stampa"></div>
 <div id="toast"></div>
 
-<footer>v7 · Quando la striscia in alto è rossa → ☰ Menu → 💾 Backup 😉</footer>
+<footer>v8 · Quando la striscia in alto è rossa → ☰ Menu → 💾 Backup 😉</footer>
 
 <div class="modal" id="mForm">
  <div class="box">
@@ -162,12 +182,14 @@ footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
   <label>Di chi / di cosa?</label>
   <input id="f_sog" placeholder="Es. Panda GG123AA — oppure: Mario" list="sogList">
   <datalist id="sogList"></datalist>
-  <div class="two">
+  <div class="three">
    <div><label>Categoria</label>
     <select id="f_cat"><option>Auto/Moto</option><option>Salute</option><option>Casa</option>
     <option>Documenti</option><option>Abbonamenti</option><option>Lavoro</option><option>Altro</option></select></div>
    <div><label>Data di scadenza</label><input type="date" id="f_data"></div>
+   <div><label>Ora (facoltativa)</label><input type="time" id="f_ora"></div>
   </div>
+  <div class="hint" style="margin-top:4px">Metti l'ora solo per gli appuntamenti veri e propri (visite, officina...). Per bollo/revisione lasciala vuota.</div>
   <label>Ogni quanto si ripete?</label>
   <select id="f_ric">
     <option value="0">Una volta sola</option><option value="1">Ogni mese</option>
@@ -211,6 +233,21 @@ footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
   <div class="acts" style="margin-top:18px">
     <button class="green" onclick="confermaFatto()">Conferma</button>
     <button class="ghost" onclick="chiudi('mFatto')">Annulla</button>
+  </div>
+ </div>
+</div>
+
+<div class="modal" id="mRin">
+ <div class="box">
+  <h2>✏️ Rinomina persona / veicolo</h2>
+  <div class="hint">Cambia il nome in TUTTE le scadenze in un colpo solo. Utile se lo hai scritto in due modi diversi (es. "panda" e "Panda").</div>
+  <label>Chi / cosa vuoi rinominare?</label>
+  <select id="r_da"></select>
+  <label>Nuovo nome</label>
+  <input id="r_nuovo" placeholder="Es. Panda GG123AA">
+  <div class="acts" style="margin-top:16px">
+    <button class="primary" onclick="confermaRin()">Rinomina</button>
+    <button class="ghost" onclick="chiudi('mRin')">Annulla</button>
   </div>
  </div>
 </div>
@@ -386,10 +423,10 @@ function toast(msg){
   toastTimer=setTimeout(()=>t.classList.remove('on'),2600);
 }
 
-/* ---------- STRISCIA PROMEMORIA ---------- */
+/* ---------- STRISCIA BACKUP ---------- */
 function aggiornaBanner(){
   const b=document.getElementById('banner');
-  if(!dati.items.length && !dati.todo.length){b.style.display='none';return;}
+  if(!dati.items.length && !dati.todo.length){b.style.display='none';aggiornaBannerCal();return;}
   b.style.display='flex';
   const ogni=parseInt(dati.meta.ogniGiorni||14), mod=dati.meta.modifiche||0, ub=dati.meta.ultimoBackup;
   const g=ub?Math.floor((Date.now()-new Date(ub).getTime())/86400000):null;
@@ -400,6 +437,30 @@ function aggiornaBanner(){
   else { cls='verde'; txt='✅ Backup fatto '+(g===0?'oggi':g===1?'ieri':g+' giorni fa')+'. Tutto a posto.'; }
   b.className='banner '+cls;
   b.innerHTML='<span>'+txt+'</span>'+(cls==='verde'?'':'<button class="bbtn" onclick="backup()">💾 Backup adesso</button>');
+  aggiornaBannerCal();
+}
+
+/* ---------- STRISCIA CALENDARIO (solo quando serve) ---------- */
+function aggiornaBannerCal(){
+  const b=document.getElementById('bannerCal');
+  if(!dati.items.length){b.style.display='none';return;}
+  const ub=dati.meta.ultimoCal;
+  const g2=ub?Math.floor((Date.now()-new Date(ub).getTime())/86400000):null;
+  let cls,txt;
+  if(g2===null){
+    cls='rosso';
+    txt='📅 <b>Queste scadenze non sono ancora nel calendario del telefono.</b> Finché non importi il file, gli avvisi non suonano.';
+  }else if(g2>=21){
+    cls='rosso';
+    txt='📅 <b>Ultimo invio al calendario: '+g2+' giorni fa.</b> Se hai cambiato qualcosa, i telefoni non lo sanno ancora.';
+  }else if(g2>=10){
+    cls='giallo';
+    txt='📅 Ultimo invio al calendario '+g2+' giorni fa — se hai fatto modifiche, reinvia il file.';
+  }else{
+    b.style.display='none'; return; /* tutto ok: niente striscia */
+  }
+  b.className='banner '+cls;
+  b.innerHTML='<span>'+txt+'</span><button class="bbtn" onclick="esportaICS()">📅 Invia adesso</button>';
 }
 
 /* ---------- DATE ---------- */
@@ -585,13 +646,16 @@ function ripetizione(i){
   if(i.ric>0) return ' · ogni '+(i.ric%12===0?(i.ric/12)+' anno/i':i.ric+' mesi');
   return '';
 }
+function ordina(items){
+  return items.sort((a,b)=>a.data.localeCompare(b.data)||(a.ora||'').localeCompare(b.ora||''));
+}
 function cardHTML(i){
   const g2=giorniMancanti(i.data), l=livello(g2), fattoN=(i.storico||[]).length;
   const st=stimaKm(i);
   const rigaKm = st ? `<div class="note">🚙 target ${(parseFloat(String(i.km).replace(/[^\d]/g,''))||0).toLocaleString('it-IT')} km · a questo ritmo: ~<b>${itDate(st)}</b></div>` : '';
   return `<div class="card c${l}">
     <div class="row1"><div class="tit">${esc(i.tit)}</div><div class="badge b${l}">${testoBadge(g2)}</div></div>
-    <div class="sub">${esc(i.sog||'—')} · ${esc(i.cat)} · <b>${itDate(i.data)}</b>${ripetizione(i)}</div>
+    <div class="sub">${esc(i.sog||'—')} · ${esc(i.cat)} · <b>${itDate(i.data)}${i.ora?' '+esc(i.ora):''}</b>${ripetizione(i)}</div>
     ${rigaKm}
     ${(i.note||i.costo)?`<div class="note">${[i.costo?'💶 ~'+esc(i.costo)+' €':'',i.note?esc(i.note):''].filter(Boolean).join(' · ')}</div>`:''}
     ${fattoN?`<div class="sub" style="margin-top:6px">📘 fatto ${fattoN} volta/e · ultima: ${itDate(i.storico[fattoN-1].data)}</div>`:''}
@@ -624,7 +688,7 @@ function disegna(){
   const tits=[...new Set(dati.items.map(i=>i.tit).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'it'));
   document.getElementById('titList').innerHTML=tits.map(t=>`<option value="${esc(t)}">`).join('');
 
-  let items=[...dati.items].sort((a,b)=>a.data.localeCompare(b.data));
+  const items=ordina([...dati.items]);
   const vis=items.filter(i=>(!fs||i.sog===fs)&&(!q||(i.tit+' '+i.sog+' '+i.cat+' '+(i.note||'')).toLowerCase().includes(q)));
 
   const sc=items.filter(i=>giorniMancanti(i.data)<0).length;
@@ -666,6 +730,30 @@ function disegna(){
 }
 const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 
+/* ---------- RINOMINA ---------- */
+function apriRin(){
+  const sogg=[...new Set(dati.items.map(i=>i.sog).filter(Boolean))];
+  if(!sogg.length){alert('Prima scrivi il "Di chi / di cosa?" in qualche scadenza.');return;}
+  document.getElementById('r_da').innerHTML=sogg.sort((a,b)=>a.localeCompare(b,'it'))
+    .map(s=>`<option value="${esc(s)}">${esc(s)}</option>`).join('');
+  const fs=document.getElementById('filtroSog').value;
+  if(fs && sogg.includes(fs)) document.getElementById('r_da').value=fs;
+  V('r_nuovo','');
+  apri('mRin');
+}
+function confermaRin(){
+  const da=g('r_da'), nu=g('r_nuovo').trim();
+  if(!da){alert('Non ci sono nomi da rinominare.');return;}
+  if(!nu){alert('Scrivi il nuovo nome.');return;}
+  if(nu===da){alert('Il nome è identico a prima.');return;}
+  const n=dati.items.filter(i=>i.sog===da).length;
+  if(!n){alert('Nessuna scadenza trovata con questo nome.');return;}
+  if(!confirm('Rinominare "'+da+'" in "'+nu+'" in '+n+' scadenze?'))return;
+  dati.items.forEach(i=>{ if(i.sog===da) i.sog=nu; });
+  save(); chiudi('mRin'); disegna();
+  toast('✏️ Rinominate '+n+' scadenze');
+}
+
 /* ---------- FORM ---------- */
 let idCorrente=null, duplicando=false, specPending=null, dnPending=null, pendingTodoId=null;
 function riempiChips(){
@@ -674,7 +762,8 @@ function riempiChips(){
 }
 function riempiCampi(i){
   V('f_tit',i?i.tit:''); V('f_sog',i?i.sog:''); V('f_cat',i?i.cat:'Auto/Moto');
-  V('f_data',i?i.data:oggiISO()); V('f_ric',i?i.ric:'12');
+  V('f_data',i?i.data:oggiISO()); V('f_ora',i?i.ora:'');
+  V('f_ric',i?i.ric:'12');
   V('f_pre',i?(i.pre||[]).join(', '):'30, 7, 1');
   V('f_cos',i?i.costo:''); V('f_km',i?i.km:''); V('f_note',i?i.note:'');
   document.getElementById('f_base').checked=i?!!i.daFatto:false;
@@ -714,6 +803,7 @@ function salvaForm(){
   if(!tit){alert('Scrivi che cosa scade.');return;}
   if(!data){alert('Metti la data di scadenza.');return;}
   const o={id:idCorrente||('s'+Date.now()),tit,sog:g('f_sog').trim(),cat:g('f_cat'),data,
+    ora:g('f_ora').trim(),
     ric:parseInt(g('f_ric')),
     pre:g('f_pre').split(',').map(x=>parseInt(x.trim())).filter(x=>x>=0),
     costo:g('f_cos').trim(),km:g('f_km').trim(),note:g('f_note').trim(),
@@ -748,7 +838,7 @@ function salvaPat(nasc,data){
 }
 function apriFormPrecompilato(cfg){
   chiudi('mCalc');
-  idCorrente=null; duplicando=false;
+  idCorrente=null; duplicando=false; pendingTodoId=null;
   document.getElementById('formTitolo').textContent='➕ Nuova scadenza';
   riempiChips(); riempiCampi(null);
   V('f_tit',cfg.tit); V('f_cat',cfg.cat); V('f_data',cfg.data);
@@ -843,6 +933,7 @@ function elimina(id){
 function esportaICS(){
   if(!dati.items.length){alert('Prima aggiungi qualche scadenza.');return;}
   const pad=n=>String(n).padStart(2,'0');
+  const p2=n=>String(n).padStart(2,'0');
   const stamp=new Date().toISOString().replace(/[-:]/g,'').split('.')[0]+'Z';
   const txt=s=>String(s||'').replace(/\\/g,'\\\\').replace(/[,;]/g,m=>'\\'+m).replace(/\n/g,'\\n');
   const dayAfter=iso=>{const d=new Date(iso+'T00:00:00');d.setDate(d.getDate()+1);
@@ -850,22 +941,67 @@ function esportaICS(){
   let L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//ScadenzeFamiglia//IT','CALSCALE:GREGORIAN','METHOD:PUBLISH'];
   dati.items.forEach(i=>{
     L.push('BEGIN:VEVENT','UID:'+i.id+'@scadenzefamiglia','DTSTAMP:'+stamp,
-      'DTSTART;VALUE=DATE:'+i.data.replace(/-/g,''),'DTEND;VALUE=DATE:'+dayAfter(i.data),
       'SUMMARY:'+txt('⚠️ '+i.tit+(i.sog?' — '+i.sog:'')));
+    if(i.ora){
+      const hm=i.ora.split(':').map(Number);
+      const fine=new Date(2000,0,1,hm[0],hm[1]); fine.setHours(fine.getHours()+1);
+      L.push('DTSTART:'+i.data.replace(/-/g,'')+'T'+p2(hm[0])+p2(hm[1])+'00');
+      L.push('DTEND:'+i.data.replace(/-/g,'')+'T'+p2(fine.getHours())+p2(fine.getMinutes())+'00');
+    }else{
+      L.push('DTSTART;VALUE=DATE:'+i.data.replace(/-/g,''),'DTEND;VALUE=DATE:'+dayAfter(i.data));
+    }
     const desc=[i.costo?'Costo previsto: '+i.costo+' €':'',i.km?'Km previsti: '+i.km:'',i.note||''].filter(Boolean).join('\n');
     if(desc) L.push('DESCRIPTION:'+txt(desc));
     if(i.ric>0) L.push('RRULE:'+(i.ric%12===0?'FREQ=YEARLY;INTERVAL='+(i.ric/12):'FREQ=MONTHLY;INTERVAL='+i.ric));
-    (i.pre||[]).forEach(d=>{
-      const ore=d*24-9;
+    (i.pre||[]).forEach(dd=>{
+      const quando=dd===0?' scade oggi':' tra '+dd+' giorni';
       L.push('BEGIN:VALARM','ACTION:DISPLAY',
-        'DESCRIPTION:'+txt(i.tit+(i.sog?' ('+i.sog+')':'')+(d===0?' scade oggi':' tra '+d+' giorni')),
-        'TRIGGER:'+(ore>0?'-PT'+ore+'H':'PT'+Math.abs(ore)+'H'),'END:VALARM');
+        'DESCRIPTION:'+txt(i.tit+(i.sog?' ('+i.sog+')':'')+quando));
+      if(i.ora){
+        const gg=addGiorni(i.data,-dd).replace(/-/g,'');
+        L.push('TRIGGER;VALUE=DATE-TIME:'+gg+'T090000');
+      }else{
+        const ore=dd*24-9;
+        L.push('TRIGGER:'+(ore>0?'-PT'+ore+'H':'PT'+Math.abs(ore)+'H'));
+      }
+      L.push('END:VALARM');
     });
     L.push('END:VEVENT');
   });
   L.push('END:VCALENDAR');
   scarica('scadenze-famiglia.ics',L.join('\r\n'),'text/calendar');
-  alert('File creato! 📅 Ora caricalo nel calendario condiviso.');
+  dati.meta.ultimoCal=new Date().toISOString();
+  localStorage.setItem(KEY,JSON.stringify(dati));
+  aggiornaBannerCal();
+  alert('File creato! 📅 Ora caricalo nel calendario condiviso\n(calendar.google.com → Impostazioni → Importa ed esporta).');
+}
+
+/* ---------- STAMPA RIEPILOGO ---------- */
+function stampa(){
+  if(!dati.items.length){alert('Non ci sono scadenze da stampare.');return;}
+  const MESI=['Gennaio','Febbraio','Marzo','Aprile','Maggio','Giugno','Luglio','Agosto','Settembre','Ottobre','Novembre','Dicembre'];
+  const items=ordina([...dati.items]);
+  const gruppi={};
+  items.forEach(i=>{ const k=i.data.slice(0,7); (gruppi[k]=gruppi[k]||[]).push(i); });
+  let H='<div class="tabSt">🗓️ Scadenze Famiglia</div>'+
+        '<div class="tabSub">Riepilogo stampato il '+itDate(oggiISO())+' · '+items.length+' scadenze · '+
+        'la situazione cambia: ristampa dopo le grandi modifiche</div>';
+  Object.keys(gruppi).sort().forEach(k=>{
+    const [y,m]=k.split('-');
+    H+='<div class="tabMe">'+MESI[parseInt(m)-1]+' '+y+'</div><table>';
+    gruppi[k].forEach(i=>{
+      const rep=ripetizione(i).replace(' · ','');
+      H+='<tr>'+
+         '<td class="tabDt"><b>'+i.data.slice(8,10)+'/'+m+'</b>'+(i.ora?'<br>'+esc(i.ora):'')+'</td>'+
+         '<td>'+esc(i.tit)+(rep?'<br><span class="tabRp">'+esc(rep)+'</span>':'')+'</td>'+
+         '<td>'+esc(i.sog||'—')+'</td>'+
+         '<td class="tabCo">'+(i.costo?esc(i.costo)+' €':'—')+'</td>'+
+         '</tr>';
+    });
+    H+='</table>';
+  });
+  document.getElementById('stampa').innerHTML=H;
+  setTimeout(()=>window.print(),150);
 }
 
 /* ---------- BACKUP ---------- */
