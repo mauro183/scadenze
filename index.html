@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- SCADENZE FAMIGLIA — versione 9 (avvisi per persona, form compatto) -->
+<!-- SCADENZE FAMIGLIA — versione 11 (kit, rimanda a scelta, filtro categoria, testo grande) -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -12,37 +12,68 @@
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Scadenze">
 <style>
+:root{
+ --bg:#f2f4f7; --card:#ffffff; --txt:#1b2430; --btn:#e7eaf0; --bord:#d3d9e2;
+ --bord2:#e3e8ef; --inpB:#cbd3de; --soft:#eef1f6; --note:#f7f9fc; --lab:#44536b;
+ --mut:#7a8699; --foot:#8b95a7; --c0:#fff2f2;
+}
+body.dark{
+ --bg:#0f141a; --card:#1a2029; --txt:#e8ecf2; --btn:#232b36; --bord:#313c4a;
+ --bord2:#26303c; --inpB:#3a4656; --soft:#222b36; --note:#1f2732; --lab:#b7c2d0;
+ --mut:#8a97a8; --foot:#778393; --c0:#2a1a1c;
+}
+/* ---- TESTO GRANDE ---- */
+body.big{font-size:17px}
+body.big .tit{font-size:19px}
+body.big .sub{font-size:15px}
+body.big .badge{font-size:13px;padding:6px 11px}
+body.big .note{font-size:15px}
+body.big button{font-size:16px}
+body.big .menu button{font-size:16px}
+body.big .tab{font-size:16px}
+body.big input,select,textarea{font-size:17px}
+body.big .ttesto{font-size:17px}
+body.big .hint{font-size:13px}
+body.big label{font-size:14px}
+body.big .acts button{font-size:15px;min-height:50px}
+body.big .stat b{font-size:24px}
+body.big .empty{font-size:18px}
+body.big .arcT td{font-size:14px}
+body.big .arcRow{font-size:14px}
+body.big .kitLab{font-size:15px}
+body.big .totBig{font-size:30px}
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;margin:0;background:#f2f4f7;color:#1b2430;
+body{font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif;margin:0;background:var(--bg);color:var(--txt);
      padding-bottom:env(safe-area-inset-bottom)}
 header{background:#1f3a5f;color:#fff;padding:16px 18px;padding-top:calc(16px + env(safe-area-inset-top))}
 header h1{margin:0;font-size:20px}
 header p{margin:4px 0 0;font-size:13px;opacity:.8}
 .wrap{max-width:860px;margin:0 auto;padding:14px}
 .bar{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:14px}
-button{font:inherit;border:0;border-radius:9px;padding:11px 14px;cursor:pointer;background:#e7eaf0;color:#1b2430}
+button{font:inherit;border:0;border-radius:9px;padding:11px 14px;cursor:pointer;background:var(--btn);color:var(--txt)}
 button:active{filter:brightness(.92)}
 .primary{background:#1f3a5f;color:#fff}
 .green{background:#1d8a4e;color:#fff}
-.ghost{background:#fff;border:1px solid #d3d9e2}
+.ghost{background:var(--card);border:1px solid var(--bord)}
 .arancio{background:#ef6c00;color:#fff}
-input,select,textarea{font-family:inherit;font-size:16px;width:100%;padding:11px;border:1px solid #cbd3de;border-radius:9px;background:#fff}
-label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px;color:#44536b}
+input,select,textarea{font-family:inherit;font-size:16px;width:100%;padding:11px;border:1px solid var(--inpB);
+     border-radius:9px;background:var(--card);color:var(--txt)}
+label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px;color:var(--lab)}
 /* ---- MENU A TENDINA ---- */
 .menuwrap{position:relative;display:inline-block}
-.menu{position:absolute;top:calc(100% + 6px);left:0;background:#fff;border:1px solid #d3d9e2;border-radius:12px;
+.menu{position:absolute;top:calc(100% + 6px);left:0;background:var(--card);border:1px solid var(--bord);border-radius:12px;
       box-shadow:0 8px 24px rgba(0,0,0,.18);display:none;min-width:240px;z-index:50;overflow:hidden;padding:4px}
 .menu.on{display:block}
 .menu button{display:block;width:100%;text-align:left;border-radius:8px;padding:13px 14px;font-size:15px;
-             background:#fff;border-bottom:1px solid #eef1f6;margin:0}
+             background:var(--card);border-bottom:1px solid var(--bord2);margin:0}
 .menu button:last-child{border-bottom:0}
-.menu button:active{background:#eef1f6}
+.menu button:active{background:var(--soft)}
 /* ---- SCHEDE ---- */
 .tabs{display:flex;gap:8px;margin-bottom:12px}
-.tab{flex:1;padding:13px 6px;font-size:15px;font-weight:700;border-radius:11px;background:#e7eaf0;color:#44536b}
+.tab{flex:1;padding:13px 6px;font-size:15px;font-weight:700;border-radius:11px;background:var(--btn);color:var(--lab)}
 .tab.attiva{background:#1f3a5f;color:#fff}
-.sez{font-size:12px;font-weight:800;letter-spacing:.5px;color:#7a8699;margin:18px 2px 8px;text-transform:uppercase}
+.sez{font-size:12px;font-weight:800;letter-spacing:.5px;color:var(--mut);margin:18px 2px 8px;text-transform:uppercase}
 .wide{width:100%;padding:13px;font-size:15px;margin-top:4px}
 /* ---- STRISCIA BACKUP ---- */
 .banner{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
@@ -54,61 +85,73 @@ label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px;color:#4453
 .bbtn{background:#1f3a5f;color:#fff;white-space:nowrap}
 /* ---- STATISTICHE ---- */
 .stats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-.stat{background:#fff;border-radius:11px;padding:10px 14px;flex:1;min-width:120px;border:1px solid #e3e8ef}
+.stat{background:var(--card);border-radius:11px;padding:10px 14px;flex:1;min-width:120px;border:1px solid var(--bord2)}
 .stat b{display:block;font-size:22px}
-.stat span{font-size:12px;color:#66748c}
+.stat span{font-size:12px;color:var(--mut)}
 /* ---- CARD ---- */
-.card{background:#fff;border-radius:12px;padding:14px;margin-bottom:10px;border-left:7px solid #ccc;box-shadow:0 1px 3px rgba(0,0,0,.06)}
-.c0{border-left-color:#c62828;background:#fff2f2}
+.card{background:var(--card);border-radius:12px;padding:14px;margin-bottom:10px;border-left:7px solid #ccc;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+.c0{border-left-color:#c62828;background:var(--c0)}
 .c1{border-left-color:#ef6c00}
 .c2{border-left-color:#f9a825}
 .c3{border-left-color:#2e7d32}
 .row1{display:flex;justify-content:space-between;align-items:center;gap:10px}
 .tit{font-weight:700;font-size:17px}
-.badge{font-size:12px;font-weight:700;padding:5px 10px;border-radius:20px;background:#eef1f6;white-space:nowrap}
+.badge{font-size:12px;font-weight:700;padding:5px 10px;border-radius:20px;background:var(--soft);white-space:nowrap}
 .b0{background:#c62828;color:#fff}.b1{background:#ef6c00;color:#fff}.b2{background:#f9a825}.b3{background:#e3f2e5;color:#1d5e2a}
-.sub{font-size:13px;color:#66748c;margin-top:3px}
-.note{font-size:13px;margin-top:7px;background:#f7f9fc;padding:8px 10px;border-radius:7px}
+.sub{font-size:13px;color:var(--mut);margin-top:3px}
+.note{font-size:13px;margin-top:7px;background:var(--note);padding:8px 10px;border-radius:7px}
 .acts{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
 .acts button{padding:11px 13px;font-size:14px;min-height:46px}
 /* ---- LISTA DA FARE ---- */
-.todoRow{display:flex;align-items:center;gap:10px;background:#fff;border-radius:12px;padding:12px 14px;
-         margin-bottom:8px;border:1px solid #e3e8ef;box-shadow:0 1px 3px rgba(0,0,0,.05)}
-.todoRow .ck{width:34px;height:34px;border-radius:50%;border:2px solid #cbd3de;background:#fff;
+.todoRow{display:flex;align-items:center;gap:10px;background:var(--card);border-radius:12px;padding:12px 14px;
+         margin-bottom:8px;border:1px solid var(--bord2);box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.todoRow .ck{width:34px;height:34px;border-radius:50%;border:2px solid var(--inpB);background:var(--card);
              font-size:17px;line-height:1;flex:none;padding:0;color:transparent}
 .todoRow .ck.on{background:#1d8a4e;border-color:#1d8a4e;color:#fff}
 .ttesto{font-size:15px;word-break:break-word}
 .todoFatta{opacity:.6}
-.todoFatta .ttesto{text-decoration:line-through;color:#8b95a7}
-/* ---- MODALI (più compatte) ---- */
+.todoFatta .ttesto{text-decoration:line-through;color:var(--foot)}
+/* ---- MODALI ---- */
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;padding:16px;overflow:auto;z-index:9}
 .modal.on{display:flex}
-.box{background:#fff;border-radius:14px;padding:16px;max-width:440px;width:100%;margin-bottom:40px}
+.box{background:var(--card);border-radius:14px;padding:16px;max-width:440px;width:100%;margin-bottom:40px}
 .box h2{margin:0 0 6px;font-size:19px}
 .two{display:flex;gap:10px}.two>div{flex:1}
 .three{display:flex;gap:10px;flex-wrap:wrap}.three>div{flex:1;min-width:120px}
-.hint{font-size:12px;color:#7a8699;margin-top:3px}
-/* ---- GRUPPI NASCOSTI DEL FORM ---- */
+.hint{font-size:12px;color:var(--mut);margin-top:3px}
 .grpRic,.grpAvanz{display:none}
 .grpRic.on,.grpAvanz.on{display:block}
 @media(max-width:719px){.grpRic{display:block}}
-.empty{text-align:center;padding:34px 16px;color:#7a8699;line-height:1.7;font-size:16px}
-.copia{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#f7f9fc;border:1px solid #e3e8ef;border-radius:9px;padding:9px 11px;margin-bottom:7px;font-size:13px}
-.avviso{background:#f7f9fc;border-left:4px solid #1f3a5f;padding:10px 12px;border-radius:7px;font-size:13px;margin:12px 0;line-height:1.5}
-.fset{border:1px solid #e3e8ef;border-radius:12px;padding:12px 14px;margin-bottom:14px;background:#fbfcfe}
+.empty{text-align:center;padding:34px 16px;color:var(--mut);line-height:1.7;font-size:16px}
+.copia{display:flex;justify-content:space-between;align-items:center;gap:8px;background:var(--note);border:1px solid var(--bord2);border-radius:9px;padding:9px 11px;margin-bottom:7px;font-size:13px}
+.avviso{background:var(--note);border-left:4px solid #1f3a5f;padding:10px 12px;border-radius:7px;font-size:13px;margin:12px 0;line-height:1.5}
+.fset{border:1px solid var(--bord2);border-radius:12px;padding:12px 14px;margin-bottom:14px;background:var(--note)}
 .fset h3{margin:0 0 4px;font-size:15px}
 .res{background:#e9f7ee;border:1px solid #b2dfc2;color:#1a5c2a;border-radius:9px;padding:10px 12px;margin-top:10px;font-size:14px;line-height:1.55;display:none}
+/* ---- KIT ---- */
+.kitRow{display:flex;align-items:center;gap:10px;margin-top:8px}
+.kitRow .kitLab{flex:1;font-size:14px;font-weight:600;color:var(--lab)}
+.kitRow input[type=date]{flex:none;width:165px}
+/* ---- ARCHIVIO ---- */
+.arcT{width:100%;border-collapse:collapse;margin:4px 0 16px;font-size:13px}
+.arcT th{text-align:left;color:var(--mut);font-size:11px;text-transform:uppercase;padding:4px 6px;border-bottom:2px solid var(--bord)}
+.arcT td{padding:6px;border-bottom:1px solid var(--bord2)}
+.arcT td.r{text-align:right;white-space:nowrap}
+.arcRow{display:flex;justify-content:space-between;gap:8px;font-size:13px;padding:8px 4px;border-bottom:1px solid var(--bord2)}
+.arcRow .r{white-space:nowrap;color:var(--lab)}
+h3.arcH{margin:16px 0 2px;font-size:15px}
+.totBig{font-size:26px;font-weight:800;margin:6px 0 2px}
 #toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(90px);background:#1b2430;color:#fff;
        padding:13px 20px;border-radius:26px;font-size:14px;opacity:0;transition:.25s;z-index:99;max-width:92%;
        text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.35);pointer-events:none}
 #toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
 /* ---- STAMPA ---- */
 #stampa{display:none}
-.tabSt{font-size:24px;font-weight:800}
+.tabSt{font-size:24px;font-weight:800;color:#000}
 .tabSub{font-size:12px;color:#555;margin:2px 0 4px}
-.tabMe{font-weight:800;font-size:16px;margin:16px 0 6px;border-bottom:2px solid #333;padding-bottom:3px}
+.tabMe{font-weight:800;font-size:16px;margin:16px 0 6px;border-bottom:2px solid #333;padding-bottom:3px;color:#000}
 #stampa table{width:100%;border-collapse:collapse;margin:0 0 8px}
-#stampa td{border:1px solid #bbb;padding:7px 9px;vertical-align:top;font-size:13px}
+#stampa td{border:1px solid #bbb;padding:7px 9px;vertical-align:top;font-size:13px;color:#000}
 .tabDt{white-space:nowrap;width:70px;text-align:center}
 .tabCo{white-space:nowrap;width:70px;text-align:right}
 .tabRp{color:#666;font-size:11px}
@@ -117,7 +160,7 @@ label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px;color:#4453
   header,.wrap,#toast,footer,.banner{display:none!important}
   #stampa{display:block!important;padding:10px}
 }
-footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
+footer{text-align:center;font-size:12px;color:var(--foot);padding:24px}
 </style>
 </head>
 <body>
@@ -142,12 +185,16 @@ footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
 
   <div class="bar">
     <button class="primary" onclick="apriForm()">➕ Nuova scadenza</button>
+    <button class="ghost" onclick="apriKit()">🚗 Kit</button>
     <button class="ghost" onclick="apriCalc()">🇮🇹 Regole IT</button>
     <span class="menuwrap">
       <button class="ghost" onclick="toggleMenu(event)">☰ Menu ▾</button>
       <span class="menu" id="menuAltro">
         <button onclick="menuAz(esportaICS)">📅 Invia al Calendario</button>
         <button onclick="menuAz(stampa)">🖨️ Stampa riepilogo</button>
+        <button onclick="menuAz(apriArchivio)">📊 Archivio &amp; Spese</button>
+        <button onclick="menuAz(cambiaTema)" id="btnTema">🌙 Tema scuro</button>
+        <button onclick="menuAz(cambiaTesto)" id="btnTesto">🔍 Testo grande</button>
         <button onclick="menuAz(backup)">💾 Backup</button>
         <button onclick="menuAz(()=>document.getElementById('fileIn').click())">📂 Ripristina</button>
         <button onclick="menuAz(apriSicurezza)">🛡️ Sicurezza</button>
@@ -159,8 +206,9 @@ footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
   </div>
 
   <div class="bar" id="barraRicerca">
-    <input id="cerca" placeholder="🔎 Cerca..." oninput="disegna()" style="flex:2;min-width:160px">
-    <select id="filtroSog" onchange="disegna()" style="flex:1;min-width:140px"></select>
+    <input id="cerca" placeholder="🔎 Cerca..." oninput="disegna()" style="flex:2;min-width:150px">
+    <select id="filtroSog" onchange="disegna()" style="flex:1;min-width:130px"></select>
+    <select id="filtroCat" onchange="disegna()" style="flex:1;min-width:120px"></select>
     <button class="ghost" onclick="apriRin()" title="Rinomina una persona/veicolo in tutte le scadenze">✏️</button>
   </div>
 
@@ -170,7 +218,7 @@ footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
 <div id="stampa"></div>
 <div id="toast"></div>
 
-<footer>v9 · Quando la striscia in alto è rossa → ☰ Menu → 💾 Backup 😉</footer>
+<footer>v11 · Quando la striscia in alto è rossa → ☰ Menu → 💾 Backup 😉</footer>
 
 <div class="modal" id="mForm">
  <div class="box">
@@ -189,7 +237,7 @@ footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
   <label>👤 Avvisi a</label>
   <input id="f_a" placeholder="vuoto = a te. Es. Moglie, Luca" list="aList">
   <datalist id="aList"></datalist>
-  <div class="hint">La notifica arriverà solo a chi scegli qui (vedi guida: un calendario per persona).</div>
+  <div class="hint">La notifica arriverà solo a chi scegli qui.</div>
 
   <div class="three">
    <div><label>Categoria</label>
@@ -242,18 +290,74 @@ footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
 <div class="modal" id="mFatto">
  <div class="box">
   <h2>✅ Segna come fatto</h2>
-  <p id="fattoNome" style="margin:0 0 10px;color:#66748c"></p>
+  <p id="fattoNome" style="margin:0 0 10px;color:var(--mut)"></p>
   <label>Quando l'hai fatto?</label>
   <input type="date" id="d_data">
   <div class="two">
    <div><label>Quanto hai speso? (€)</label><input id="d_costo" placeholder="facoltativo"></div>
    <div><label>Km attuali (contachilometri)</label><input id="d_km" placeholder="es. 82500"></div>
   </div>
-  <div class="hint" style="margin-top:4px">I km servono all'app per stimare il prossimo tagliando 🚙</div>
+  <div class="hint" style="margin-top:4px">Il costo finisce nelle Statistiche 📊, i km aiutano col tagliando 🚙</div>
   <div class="acts" style="margin-top:18px">
     <button class="green" onclick="confermaFatto()">Conferma</button>
     <button class="ghost" onclick="chiudi('mFatto')">Annulla</button>
   </div>
+ </div>
+</div>
+
+<div class="modal" id="mRim">
+ <div class="box">
+  <h2>⏰ Rimanda</h2>
+  <p id="rimNome" style="margin:0 0 10px;color:var(--mut)"></p>
+  <div class="acts" style="flex-direction:column;align-items:stretch;margin-top:0">
+    <button class="ghost" onclick="rimandaGiorni(1)">🌅 Domani</button>
+    <button class="ghost" onclick="rimandaGiorni(7)">📅 Fra una settimana</button>
+    <button class="ghost" onclick="rimandaMese()">🗓️ Fra un mese</button>
+  </div>
+  <label style="margin-top:14px">Oppure scegli la data esatta:</label>
+  <input type="date" id="rim_data">
+  <div class="acts" style="margin-top:12px">
+    <button class="primary" onclick="rimandaData()">Sposta a questa data</button>
+    <button class="ghost" onclick="chiudi('mRim')">Annulla</button>
+  </div>
+ </div>
+</div>
+
+<div class="modal" id="mKit">
+ <div class="box" style="max-width:520px">
+  <h2>🚗👤 Kit nuovo soggetto</h2>
+  <div class="hint">Crea in un colpo solo tutte le scadenze di una nuova auto o persona.
+   Compila solo le date che conosci: quelle vuote vengono saltate.
+   Per le regole esatte (revisione/bollo/patente) puoi poi usare 🇮🇹 Regole IT.</div>
+  <label>Nome (auto o persona)</label>
+  <input id="kit_sog" placeholder="Es. Yaris FY456GH — oppure: Giulia">
+  <label>👤 Avvisi a (facoltativo)</label>
+  <input id="kit_a" placeholder="vuoto = a te" list="aList">
+  <h3 style="margin:14px 0 2px;font-size:15px">🚗 Veicolo</h3>
+  <div class="kitRow"><span class="kitLab">Assicurazione auto</span><input type="date" id="k_ass"></div>
+  <div class="kitRow"><span class="kitLab">Bollo auto</span><input type="date" id="k_bol"></div>
+  <div class="kitRow"><span class="kitLab">Revisione</span><input type="date" id="k_rev"></div>
+  <div class="kitRow"><span class="kitLab">Tagliando</span><input type="date" id="k_tag"></div>
+  <h3 style="margin:14px 0 2px;font-size:15px">👤 Persona</h3>
+  <div class="kitRow"><span class="kitLab">Patente</span><input type="date" id="k_pat"></div>
+  <div class="kitRow"><span class="kitLab">Carta d\u2019identità</span><input type="date" id="k_cid"></div>
+  <div class="kitRow"><span class="kitLab">Dentista (controllo)</span><input type="date" id="k_den"></div>
+  <div class="kitRow"><span class="kitLab">Visita oculistica</span><input type="date" id="k_occ"></div>
+  <div class="kitRow"><span class="kitLab">Analisi del sangue</span><input type="date" id="k_ana"></div>
+  <div class="acts" style="margin-top:16px">
+    <button class="primary" onclick="salvaKit()">Crea le scadenze</button>
+    <button class="ghost" onclick="chiudi('mKit')">Annulla</button>
+  </div>
+ </div>
+</div>
+
+<div class="modal" id="mArc">
+ <div class="box" style="max-width:600px">
+  <h2>📊 Archivio &amp; Spese</h2>
+  <div class="hint">Tutto ciò che hai segnato "✅ Fatto", con i costi. Vale anche per le cose fatte una volta sola.</div>
+  <div style="margin-top:8px"><input id="arcQ" placeholder="🔎 Cerca nell'archivio..." oninput="disegnaArchivio()"></div>
+  <div id="arcOut"></div>
+  <div class="acts"><button class="ghost" onclick="chiudi('mArc')">Chiudi</button></div>
  </div>
 </div>
 
@@ -379,12 +483,48 @@ document.addEventListener('click',ev=>{
   if(m && m.classList.contains('on') && !m.contains(ev.target)) m.classList.remove('on');
 });
 
+/* ---------- TEMA ---------- */
+const KEYT='scadenzeFamiglia_tema';
+function applicaTema(){
+  const dark=localStorage.getItem(KEYT)==='dark';
+  document.body.classList.toggle('dark',dark);
+  document.getElementById('btnTema').textContent=dark?'☀️ Tema chiaro':'🌙 Tema scuro';
+}
+function cambiaTema(){
+  const dark=!document.body.classList.contains('dark');
+  localStorage.setItem(KEYT,dark?'dark':'light');
+  applicaTema();
+  toast(dark?'🌙 Tema scuro attivo':'☀️ Tema chiaro attivo');
+}
+
+/* ---------- TESTO GRANDE ---------- */
+const KEYB='scadenzeFamiglia_big';
+function applicaTesto(){
+  const big=localStorage.getItem(KEYB)==='big';
+  document.body.classList.toggle('big',big);
+  document.getElementById('btnTesto').textContent=big?'🔍 Testo normale':'🔍 Testo grande';
+}
+function cambiaTesto(){
+  const big=!document.body.classList.contains('big');
+  localStorage.setItem(KEYB,big?'big':'norm');
+  applicaTesto();
+  toast(big?'🔍 Testo grande attivo':'🔍 Testo normale');
+}
+
 /* ---------- MEMORIA ---------- */
 const KEY='scadenzeFamiglia_v1', KEYC='scadenzeFamiglia_copie';
 let dati=JSON.parse(localStorage.getItem(KEY)||'{"items":[]}');
 if(!dati.items) dati.items=[];
 if(!dati.todo) dati.todo=[];
+if(!dati.archivio) dati.archivio=[];
 if(!dati.meta) dati.meta={ultimoBackup:null,modifiche:0,ogniGiorni:14};
+if(!dati.meta.arcv){
+  dati.items.forEach(i=>(i.storico||[]).forEach(h=>{
+    dati.archivio.push({d:h.data,tit:i.tit,sog:i.sog||'',cat:i.cat||'',costo:h.costo,km:h.km});
+  }));
+  dati.meta.arcv=2;
+  localStorage.setItem(KEY,JSON.stringify(dati));
+}
 let precedente=JSON.stringify(dati);
 let vista=dati.meta.vista||'oggi';
 function save(nonContare){
@@ -409,6 +549,7 @@ function applicaStato(obj){
   dati=obj;
   if(!dati.items) dati.items=[];
   if(!dati.todo) dati.todo=[];
+  if(!dati.archivio) dati.archivio=[];
   if(!dati.meta) dati.meta={ultimoBackup:null,modifiche:0,ogniGiorni:14};
   localStorage.setItem(KEY,JSON.stringify(dati));
   precedente=JSON.stringify(dati); disegna(); aggiornaBanner();
@@ -575,6 +716,40 @@ const MODELLI=[
  {n:'Abbonamento',c:'Abbonamenti',r:12,p:'20,5'}
 ];
 
+/* ---------- KIT ---------- */
+const KIT=[
+ {d:'k_ass',t:'Assicurazione auto',c:'Auto/Moto',r:12,p:[45,20,7,1],base:false},
+ {d:'k_bol',t:'Bollo auto',c:'Auto/Moto',r:12,p:[30,10,2],base:false},
+ {d:'k_rev',t:'Revisione',c:'Auto/Moto',r:24,p:[60,30,7,1],base:false},
+ {d:'k_tag',t:'Tagliando',c:'Auto/Moto',r:12,p:[30,7],base:false},
+ {d:'k_pat',t:'Patente',c:'Documenti',r:120,p:[90,30,7],base:false},
+ {d:'k_cid',t:'Carta d\u2019identit\u00e0',c:'Documenti',r:120,p:[90,30,7],base:false},
+ {d:'k_den',t:'Dentista (controllo)',c:'Salute',r:6,p:[14,2],base:true},
+ {d:'k_occ',t:'Visita oculistica',c:'Salute',r:24,p:[30,7],base:true},
+ {d:'k_ana',t:'Analisi del sangue',c:'Salute',r:12,p:[21,5],base:true}
+];
+function apriKit(){
+  V('kit_sog',''); V('kit_a','');
+  KIT.forEach(k=>V(k.d,''));
+  apri('mKit');
+  setTimeout(()=>{document.getElementById('kit_sog').focus();},400);
+}
+function salvaKit(){
+  const sog=g('kit_sog').trim();
+  if(!sog){alert('Scrivi il nome (auto o persona).');return;}
+  const avvisi=g('kit_a').trim();
+  const scelte=KIT.filter(k=>g(k.d));
+  if(!scelte.length){alert('Compila almeno una data.');return;}
+  const base=Date.now();
+  scelte.forEach((k,idx)=>{
+    dati.items.push({id:'s'+(base+idx),tit:k.t,sog:sog,a:avvisi,cat:k.c,data:g(k.d),
+      ora:'',ric:k.r,pre:k.p.slice(),costo:'',km:'',note:'',daFatto:k.base,storico:[]});
+  });
+  save(); chiudi('mKit'); disegna();
+  toast('🚗 Creati '+scelte.length+' scadenze per '+sog);
+  alert('Creati '+scelte.length+' scadenze per "'+sog+'" ✅\n\nRicordati di premere ☰ Menu → "📅 Invia al Calendario"\nper farle arrivare sui telefoni.');
+}
+
 /* ---------- SCHEDE ---------- */
 function cambiaVista(v){
   vista=v; dati.meta.vista=v;
@@ -652,6 +827,7 @@ function disegnaTodo(){
 }
 
 /* ---------- SCHERMO ---------- */
+const CATS=['Auto/Moto','Salute','Casa','Documenti','Abbonamenti','Lavoro','Altro'];
 function livello(g){ return g<0?0 : g<=7?1 : g<=30?2 : 3; }
 function testoBadge(g){
   if(g<0) return 'SCADUTA da '+(-g)+' gg';
@@ -681,7 +857,7 @@ function cardHTML(i){
     ${fattoN?`<div class="sub" style="margin-top:6px">📘 fatto ${fattoN} volta/e · ultima: ${itDate(i.storico[fattoN-1].data)}</div>`:''}
     <div class="acts">
       <button class="green" onclick="apriFatto('${i.id}')">✅ Fatto</button>
-      <button class="arancio" onclick="rimanda('${i.id}')">⏰ +7gg</button>
+      <button class="arancio" onclick="apriRimanda('${i.id}')">⏰ Rimanda</button>
       ${st && st<i.data?`<button class="arancio" onclick="spostaKm('${i.id}','${st}')">⏩ usa km: ${itDate(st)}</button>`:''}
       <button onclick="apriDuplica('${i.id}')" title="Duplica">📄</button>
       <button onclick="apriForm('${i.id}')" title="Modifica">✏️</button>
@@ -701,9 +877,12 @@ function disegna(){
 
   const q=(document.getElementById('cerca').value||'').toLowerCase();
   const fs=document.getElementById('filtroSog').value;
+  const fc=document.getElementById('filtroCat').value;
   const sogg=[...new Set(dati.items.map(i=>i.sog).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'it'));
   document.getElementById('filtroSog').innerHTML='<option value="">👥 Tutti</option>'+
     sogg.map(s=>`<option ${s===fs?'selected':''}>${esc(s)}</option>`).join('');
+  document.getElementById('filtroCat').innerHTML='<option value="">🗂️ Tutte</option>'+
+    CATS.map(c=>`<option ${c===fc?'selected':''}>${c}</option>`).join('');
   document.getElementById('sogList').innerHTML=sogg.map(s=>`<option value="${esc(s)}">`).join('');
   const tits=[...new Set(dati.items.map(i=>i.tit).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'it'));
   document.getElementById('titList').innerHTML=tits.map(t=>`<option value="${esc(t)}">`).join('');
@@ -711,7 +890,8 @@ function disegna(){
   document.getElementById('aList').innerHTML=own.map(s=>`<option value="${esc(s)}">`).join('');
 
   const items=ordina([...dati.items]);
-  const vis=items.filter(i=>(!fs||i.sog===fs)&&(!q||(i.tit+' '+i.sog+' '+i.cat+' '+(i.a||'')+' '+(i.note||'')).toLowerCase().includes(q)));
+  const vis=items.filter(i=>(!fs||i.sog===fs)&&(!fc||i.cat===fc)&&
+    (!q||(i.tit+' '+i.sog+' '+i.cat+' '+(i.a||'')+' '+(i.note||'')).toLowerCase().includes(q)));
 
   const sc=items.filter(i=>giorniMancanti(i.data)<0).length;
   const tra30=items.filter(i=>{const g=giorniMancanti(i.data);return g>=0&&g<=30;}).length;
@@ -727,12 +907,12 @@ function disegna(){
   const dopo=vis.filter(i=>giorniMancanti(i.data)>30);
 
   if(!dati.items.length){
-    L.innerHTML='<div class="empty">Nessuna scadenza.<br>Premi <b>➕ Nuova scadenza</b> oppure <b>🇮🇹 Regole IT</b> per iniziare.<br><br>'+
+    L.innerHTML='<div class="empty">Nessuna scadenza.<br>Premi <b>➕ Nuova scadenza</b>, <b>🚗 Kit</b> oppure <b>🇮🇹 Regole IT</b> per iniziare.<br><br>'+
       '<span style="font-size:13px">Hai già i dati su un altro dispositivo?<br>Usa <b>☰ Menu → 🔁 Trasferisci</b>.</span></div>';
     return;
   }
   if(!vis.length){
-    L.innerHTML='<div class="empty">Nessun risultato.<br><span style="font-size:13px">Prova a cancellare la ricerca o il filtro nome.</span></div>';
+    L.innerHTML='<div class="empty">Nessun risultato.<br><span style="font-size:13px">Prova a cancellare la ricerca o i filtri.</span></div>';
     return;
   }
 
@@ -751,6 +931,86 @@ function disegna(){
   L.innerHTML=H;
 }
 const esc=s=>String(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+/* ---------- RIMANDA A SCELTA ---------- */
+let idRim=null;
+function apriRimanda(id){
+  idRim=id;
+  const i=dati.items.find(x=>x.id===id);
+  document.getElementById('rimNome').textContent=i.tit+' — '+(i.sog||'')+' · ora: '+itDate(i.data);
+  V('rim_data',i.data);
+  apri('mRim');
+}
+function rimandaGiorni(n){
+  const i=dati.items.find(x=>x.id===idRim); if(!i)return;
+  i.data=addGiorni(i.data,n);
+  save(); chiudi('mRim'); disegna();
+  toast('⏰ Rimandata al '+itDate(i.data));
+}
+function rimandaMese(){
+  const i=dati.items.find(x=>x.id===idRim); if(!i)return;
+  i.data=addMesi(i.data,1);
+  save(); chiudi('mRim'); disegna();
+  toast('⏰ Rimandata al '+itDate(i.data));
+}
+function rimandaData(){
+  const i=dati.items.find(x=>x.id===idRim); if(!i)return;
+  const d=g('rim_data');
+  if(!d){alert('Scegli una data.');return;}
+  i.data=d;
+  save(); chiudi('mRim'); disegna();
+  toast('⏰ Spostata al '+itDate(i.data));
+}
+
+/* ---------- ARCHIVIO & SPESE ---------- */
+function apriArchivio(){
+  V('arcQ','');
+  disegnaArchivio();
+  apri('mArc');
+}
+function numArc(s){
+  const v=parseFloat(String(s||'').replace(/[^\d.,-]/g,'').replace(',','.'));
+  return isNaN(v)?0:v;
+}
+function tabArc(titolo,obj,ord){
+  let keys=Object.keys(obj);
+  if(!keys.length) return '';
+  keys = ord==='anno' ? keys.sort((a,b)=>b.localeCompare(a)) : keys.sort((a,b)=>obj[b].e-obj[a].e);
+  let H='<h3 class="arcH">'+titolo+'</h3><table class="arcT"><tr><th>Chi / Cosa</th><th>Fatti</th><th style="text-align:right">Speso</th></tr>';
+  keys.forEach(k=>{
+    H+='<tr><td>'+esc(k)+'</td><td>'+obj[k].n+'</td><td class="r"><b>'+obj[k].e.toFixed(2).replace('.',',')+' €</b></td></tr>';
+  });
+  return H+'</table>';
+}
+function disegnaArchivio(){
+  const q=(g('arcQ')||'').toLowerCase();
+  const A=dati.archivio||[];
+  const out=document.getElementById('arcOut');
+  if(!A.length){
+    out.innerHTML='<div class="empty">Archivio vuoto.<br>La prima volta che premi <b>✅ Fatto</b> su una scadenza,<br>l\'operazione finisce qui — con data e costo.</div>';
+    return;
+  }
+  const perS={},perC={},perY={};
+  let tot=0;
+  A.forEach(x=>{
+    const c=numArc(x.costo); tot+=c;
+    const s=(x.sog||'—'); perS[s]=perS[s]||{n:0,e:0}; perS[s].n++; perS[s].e+=c;
+    const ca=(x.cat||'—'); perC[ca]=perC[ca]||{n:0,e:0}; perC[ca].n++; perC[ca].e+=c;
+    const y=(x.d||'').slice(0,4)||'—'; perY[y]=perY[y]||{n:0,e:0}; perY[y].n++; perY[y].e+=c;
+  });
+  let H='<div class="totBig">'+tot.toFixed(2).replace('.',',')+' €</div>'+
+        '<div class="hint">spesi in totale · '+A.length+' operazioni registrate</div>';
+  H+=tabArc('💰 Per persona / veicolo',perS,'euro');
+  H+=tabArc('🗂️ Per categoria',perC,'euro');
+  H+=tabArc('📆 Per anno',perY,'anno');
+  const vis=A.filter(x=>!q||((x.tit||'')+' '+(x.sog||'')+' '+(x.cat||'')).toLowerCase().includes(q))
+             .sort((a,b)=>(b.d||'').localeCompare(a.d||'')).slice(0,100);
+  H+='<h3 class="arcH">📜 Archivio'+(q?' ('+vis.length+' risultati)':' (ultimi 100)')+'</h3>';
+  H+=vis.map(x=>`<div class="arcRow">
+      <span>${x.d?itDate(x.d):'—'} · <b>${esc(x.tit||'')}</b>${x.sog?' — '+esc(x.sog):''}${x.km?' · 🚙 '+esc(x.km)+' km':''}</span>
+      <span class="r">${x.costo?esc(x.costo)+' €':''}</span></div>`).join('');
+  out.innerHTML=H;
+}
 
 /* ---------- RINOMINA ---------- */
 function apriRin(){
@@ -772,6 +1032,7 @@ function confermaRin(){
   if(!n){alert('Nessuna scadenza trovata con questo nome.');return;}
   if(!confirm('Rinominare "'+da+'" in "'+nu+'" in '+n+' scadenze?'))return;
   dati.items.forEach(i=>{ if(i.sog===da) i.sog=nu; });
+  dati.archivio.forEach(x=>{ if(x.sog===da) x.sog=nu; });
   save(); chiudi('mRin'); disegna();
   toast('✏️ Rinominate '+n+' scadenze');
 }
@@ -917,14 +1178,6 @@ function calcPat(){
     '<div class="acts"><button class="green" onclick="salvaPat(\''+n+'\',\''+s+'\')">💾 Salva questa scadenza</button></div>';
 }
 
-/* ---------- RIMANDA ---------- */
-function rimanda(id){
-  const i=dati.items.find(x=>x.id===id);
-  i.data=addGiorni(i.data,7);
-  save(); disegna();
-  toast('⏰ Rimandata al '+itDate(i.data));
-}
-
 /* ---------- FATTO ---------- */
 let idFatto=null;
 function apriFatto(id){
@@ -936,7 +1189,10 @@ function apriFatto(id){
 function confermaFatto(){
   const i=dati.items.find(x=>x.id===idFatto);
   i.storico=i.storico||[];
-  i.storico.push({data:g('d_data'),costo:g('d_costo'),km:g('d_km')});
+  const hData=g('d_data'), hCosto=g('d_costo'), hKm=g('d_km');
+  i.storico.push({data:hData,costo:hCosto,km:hKm});
+  dati.archivio=dati.archivio||[];
+  dati.archivio.push({d:hData,tit:i.tit,sog:i.sog||'',cat:i.cat||'',costo:hCosto,km:hKm});
   if(i.spec){
     if(i.spec==='revisione'){ i.data=fineMese(addMesi(i.data,24)); }
     else if(i.spec==='bollo'){ i.data=fineMese(addMesi(i.data,12)); }
@@ -948,10 +1204,10 @@ function confermaFatto(){
     alert('Fatto! ✅\nNuova scadenza calcolata con la regola italiana 🇮🇹: '+itDate(i.data)+
           '\n\nRicordati di premere ☰ Menu → "📅 Invia al Calendario".');
   }else if(i.ric>0){
-    i.data=addMesi(i.daFatto?g('d_data'):i.data,i.ric);
+    i.data=addMesi(i.daFatto?hData:i.data,i.ric);
     toast('✅ Fatto! Prossima: '+itDate(i.data));
     alert('Fatto! ✅\nProssima scadenza: '+itDate(i.data)+'\n\nRicordati di premere ☰ Menu → "📅 Invia al Calendario".');
-  }else if(confirm('Questa scadenza non si ripete. Eliminarla?')){
+  }else if(confirm('Questa scadenza non si ripete.\nL\'operazione è salvata in 📊 Archivio.\nEliminarla dall\'elenco?')){
     dati.items=dati.items.filter(x=>x.id!==idFatto);
   }
   save(); chiudi('mFatto'); disegna();
@@ -1024,7 +1280,7 @@ function esportaICS(){
   localStorage.setItem(KEY,JSON.stringify(dati));
   aggiornaBannerCal();
   alert('Creati '+keys.length+' file 📅\n\n'+riepiloghi.join('\n')+
-    '\n\nOra importa OGNI file nel calendario della persona giusta\n(vedi guida, PARTE 3).'+
+    '\n\nOra importa OGNI file nel calendario della persona giusta.'+
     (keys.length>1?'\n\nSe il browser chiede il permesso di scaricare più file → Consenti.':''));
 }
 
@@ -1058,7 +1314,7 @@ function stampa(){
 
 /* ---------- BACKUP ---------- */
 function backup(){
-  if(!dati.items.length && !dati.todo.length){alert('Non c\'è ancora niente da salvare.');return;}
+  if(!dati.items.length && !dati.todo.length && !(dati.archivio||[]).length){alert('Non c\'è ancora niente da salvare.');return;}
   dati.meta.ultimoBackup=new Date().toISOString(); dati.meta.modifiche=0;
   localStorage.setItem(KEY,JSON.stringify(dati)); precedente=JSON.stringify(dati);
   scarica('backup-scadenze-'+oggiISO()+'.json',JSON.stringify(dati,null,1),'application/json');
@@ -1119,9 +1375,12 @@ const apri=id=>document.getElementById(id).classList.add('on');
 const chiudi=id=>{
   document.getElementById(id).classList.remove('on');
   if(id==='mForm') pendingTodoId=null;
+  if(id==='mRim') idRim=null;
 };
 
 /* ---------- AVVIO ---------- */
+applicaTema();
+applicaTesto();
 document.getElementById('tabOggi').classList.toggle('attiva',vista==='oggi');
 document.getElementById('tabDa').classList.toggle('attiva',vista==='dafare');
 document.getElementById('tabTutte').classList.toggle('attiva',vista==='tutte');
