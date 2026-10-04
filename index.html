@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- SCADENZE FAMIGLIA — versione 8 (orario, promemoria calendario, rinomina, stampa) -->
+<!-- SCADENZE FAMIGLIA — versione 9 (avvisi per persona, form compatto) -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -80,14 +80,18 @@ label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px;color:#4453
 .ttesto{font-size:15px;word-break:break-word}
 .todoFatta{opacity:.6}
 .todoFatta .ttesto{text-decoration:line-through;color:#8b95a7}
-/* ---- MODALI ---- */
+/* ---- MODALI (più compatte) ---- */
 .modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;padding:16px;overflow:auto;z-index:9}
 .modal.on{display:flex}
-.box{background:#fff;border-radius:14px;padding:18px;max-width:560px;width:100%;margin-bottom:40px}
+.box{background:#fff;border-radius:14px;padding:16px;max-width:440px;width:100%;margin-bottom:40px}
 .box h2{margin:0 0 6px;font-size:19px}
 .two{display:flex;gap:10px}.two>div{flex:1}
-.three{display:flex;gap:10px;flex-wrap:wrap}.three>div{flex:1;min-width:130px}
+.three{display:flex;gap:10px;flex-wrap:wrap}.three>div{flex:1;min-width:120px}
 .hint{font-size:12px;color:#7a8699;margin-top:3px}
+/* ---- GRUPPI NASCOSTI DEL FORM ---- */
+.grpRic,.grpAvanz{display:none}
+.grpRic.on,.grpAvanz.on{display:block}
+@media(max-width:719px){.grpRic{display:block}}
 .empty{text-align:center;padding:34px 16px;color:#7a8699;line-height:1.7;font-size:16px}
 .copia{display:flex;justify-content:space-between;align-items:center;gap:8px;background:#f7f9fc;border:1px solid #e3e8ef;border-radius:9px;padding:9px 11px;margin-bottom:7px;font-size:13px}
 .avviso{background:#f7f9fc;border-left:4px solid #1f3a5f;padding:10px 12px;border-radius:7px;font-size:13px;margin:12px 0;line-height:1.5}
@@ -166,14 +170,14 @@ footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
 <div id="stampa"></div>
 <div id="toast"></div>
 
-<footer>v8 · Quando la striscia in alto è rossa → ☰ Menu → 💾 Backup 😉</footer>
+<footer>v9 · Quando la striscia in alto è rossa → ☰ Menu → 💾 Backup 😉</footer>
 
 <div class="modal" id="mForm">
  <div class="box">
   <h2 id="formTitolo">Nuova scadenza</h2>
   <div class="avviso" id="specHint" style="display:none">🇮🇹 <b>Regola italiana attiva:</b> dopo il "✅ Fatto", l'app calcolerà da sola la data successiva secondo la legge.</div>
 
-  <label>Modello pronto (facoltativo — sceglici e i campi si riempiono da soli)</label>
+  <label>Modello pronto (facoltativo)</label>
   <select id="f_modello" onchange="usaModello(this.value)"></select>
 
   <label>Che cosa scade?</label>
@@ -182,6 +186,11 @@ footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
   <label>Di chi / di cosa?</label>
   <input id="f_sog" placeholder="Es. Panda GG123AA — oppure: Mario" list="sogList">
   <datalist id="sogList"></datalist>
+  <label>👤 Avvisi a</label>
+  <input id="f_a" placeholder="vuoto = a te. Es. Moglie, Luca" list="aList">
+  <datalist id="aList"></datalist>
+  <div class="hint">La notifica arriverà solo a chi scegli qui (vedi guida: un calendario per persona).</div>
+
   <div class="three">
    <div><label>Categoria</label>
     <select id="f_cat"><option>Auto/Moto</option><option>Salute</option><option>Casa</option>
@@ -189,24 +198,35 @@ footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
    <div><label>Data di scadenza</label><input type="date" id="f_data"></div>
    <div><label>Ora (facoltativa)</label><input type="time" id="f_ora"></div>
   </div>
-  <div class="hint" style="margin-top:4px">Metti l'ora solo per gli appuntamenti veri e propri (visite, officina...). Per bollo/revisione lasciala vuota.</div>
-  <label>Ogni quanto si ripete?</label>
-  <select id="f_ric">
-    <option value="0">Una volta sola</option><option value="1">Ogni mese</option>
-    <option value="3">Ogni 3 mesi</option><option value="6">Ogni 6 mesi</option>
-    <option value="12">Ogni anno</option><option value="24">Ogni 2 anni</option>
-    <option value="36">Ogni 3 anni</option><option value="60">Ogni 5 anni</option>
-    <option value="120">Ogni 10 anni</option>
-  </select>
-  <label>Quanti giorni prima vuoi essere avvisato?</label>
-  <input id="f_pre" placeholder="60, 30, 7, 1">
-  <div class="hint">Separa i numeri con la virgola.</div>
-  <div class="two">
-   <div><label>Costo previsto (€)</label><input id="f_cos" placeholder="es. 180"></div>
-   <div><label>Km previsti alla prossima scadenza</label><input id="f_km" placeholder="es. 90000 (per il tagliando)"></div>
+  <div class="hint" style="margin-top:4px">Metti l'ora solo per gli appuntamenti veri (visite, officina...).</div>
+
+  <div class="grpRic" id="grpRic">
+   <div class="two">
+    <div><label>Ogni quanto si ripete?</label>
+     <select id="f_ric">
+      <option value="0">Una volta sola</option><option value="1">Ogni mese</option>
+      <option value="3">Ogni 3 mesi</option><option value="6">Ogni 6 mesi</option>
+      <option value="12">Ogni anno</option><option value="24">Ogni 2 anni</option>
+      <option value="36">Ogni 3 anni</option><option value="60">Ogni 5 anni</option>
+      <option value="120">Ogni 10 anni</option>
+     </select></div>
+    <div><label>Avvisami quanti giorni prima?</label>
+     <input id="f_pre" placeholder="60, 30, 7, 1">
+     <div class="hint">Separa i numeri con la virgola.</div></div>
+   </div>
   </div>
-  <label>Note / telefono / officina</label>
-  <textarea id="f_note" rows="2" placeholder="Es. Officina Rossi 0123-456789"></textarea>
+
+  <button class="ghost wide" id="btnOpz" onclick="toggleOpz()" style="margin-top:10px">⚙️ Altre opzioni</button>
+
+  <div class="grpAvanz" id="grpAvanz">
+   <div class="two">
+    <div><label>Costo previsto (€)</label><input id="f_cos" placeholder="es. 180"></div>
+    <div><label>Km previsti alla prossima</label><input id="f_km" placeholder="es. 90000"></div>
+   </div>
+   <label>Note / telefono / officina</label>
+   <textarea id="f_note" rows="2" placeholder="Es. Officina Rossi 0123-456789"></textarea>
+  </div>
+
   <label id="labBase" style="display:flex;align-items:center;gap:8px;margin-top:14px">
     <input type="checkbox" id="f_base" style="width:auto">
     <span style="font-weight:400;font-size:14px">La prossima volta conta dal giorno in cui l'ho fatto davvero
@@ -240,7 +260,7 @@ footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
 <div class="modal" id="mRin">
  <div class="box">
   <h2>✏️ Rinomina persona / veicolo</h2>
-  <div class="hint">Cambia il nome in TUTTE le scadenze in un colpo solo. Utile se lo hai scritto in due modi diversi (es. "panda" e "Panda").</div>
+  <div class="hint">Cambia il nome in TUTTE le scadenze in un colpo solo.</div>
   <label>Chi / cosa vuoi rinominare?</label>
   <select id="r_da"></select>
   <label>Nuovo nome</label>
@@ -272,7 +292,7 @@ footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
 
   <div class="fset">
    <h3>🧾 Bollo auto</h3>
-   <div class="hint">Si paga ogni anno entro la fine del mese SUCCESSIVO al mese di immatricolazione (es. immatricolata a gennaio → entro fine febbraio).</div>
+   <div class="hint">Si paga ogni anno entro la fine del mese SUCCESSIVO al mese di immatricolazione.</div>
    <label>Data di immatricolazione (basta il mese)</label>
    <input type="date" id="c_bol">
    <div class="acts"><button class="primary" onclick="calcBollo()">🧮 Calcola</button></div>
@@ -281,7 +301,7 @@ footer{text-align:center;font-size:12px;color:#8b95a7;padding:24px}
 
   <div class="fset">
    <h3>🪪 Patente</h3>
-   <div class="hint">Durata del rinnovo secondo l'età: 10 anni fino a 50, poi 5, poi 3, poi 2. Il rinnovo si può fare da 4 mesi prima.</div>
+   <div class="hint">Durata del rinnovo secondo l'età: 10 anni fino a 50, poi 5, poi 3, poi 2.</div>
    <label>Data di nascita</label>
    <input type="date" id="c_nasc">
    <label>Scadenza stampata sulla patente</label>
@@ -440,7 +460,7 @@ function aggiornaBanner(){
   aggiornaBannerCal();
 }
 
-/* ---------- STRISCIA CALENDARIO (solo quando serve) ---------- */
+/* ---------- STRISCIA CALENDARIO ---------- */
 function aggiornaBannerCal(){
   const b=document.getElementById('bannerCal');
   if(!dati.items.length){b.style.display='none';return;}
@@ -449,15 +469,15 @@ function aggiornaBannerCal(){
   let cls,txt;
   if(g2===null){
     cls='rosso';
-    txt='📅 <b>Queste scadenze non sono ancora nel calendario del telefono.</b> Finché non importi il file, gli avvisi non suonano.';
+    txt='📅 <b>Queste scadenze non sono ancora nel calendario del telefono.</b>';
   }else if(g2>=21){
     cls='rosso';
-    txt='📅 <b>Ultimo invio al calendario: '+g2+' giorni fa.</b> Se hai cambiato qualcosa, i telefoni non lo sanno ancora.';
+    txt='📅 <b>Ultimo invio al calendario: '+g2+' giorni fa.</b> I telefoni non sanno ancora le ultime modifiche.';
   }else if(g2>=10){
     cls='giallo';
-    txt='📅 Ultimo invio al calendario '+g2+' giorni fa — se hai fatto modifiche, reinvia il file.';
+    txt='📅 Ultimo invio al calendario '+g2+' giorni fa — se hai fatto modifiche, reinvia.';
   }else{
-    b.style.display='none'; return; /* tutto ok: niente striscia */
+    b.style.display='none'; return;
   }
   b.className='banner '+cls;
   b.innerHTML='<span>'+txt+'</span><button class="bbtn" onclick="esportaICS()">📅 Invia adesso</button>';
@@ -655,7 +675,7 @@ function cardHTML(i){
   const rigaKm = st ? `<div class="note">🚙 target ${(parseFloat(String(i.km).replace(/[^\d]/g,''))||0).toLocaleString('it-IT')} km · a questo ritmo: ~<b>${itDate(st)}</b></div>` : '';
   return `<div class="card c${l}">
     <div class="row1"><div class="tit">${esc(i.tit)}</div><div class="badge b${l}">${testoBadge(g2)}</div></div>
-    <div class="sub">${esc(i.sog||'—')} · ${esc(i.cat)} · <b>${itDate(i.data)}${i.ora?' '+esc(i.ora):''}</b>${ripetizione(i)}</div>
+    <div class="sub">${esc(i.sog||'—')} · ${esc(i.cat)} · <b>${itDate(i.data)}${i.ora?' '+esc(i.ora):''}</b>${ripetizione(i)}${i.a?' · 👤 '+esc(i.a):''}</div>
     ${rigaKm}
     ${(i.note||i.costo)?`<div class="note">${[i.costo?'💶 ~'+esc(i.costo)+' €':'',i.note?esc(i.note):''].filter(Boolean).join(' · ')}</div>`:''}
     ${fattoN?`<div class="sub" style="margin-top:6px">📘 fatto ${fattoN} volta/e · ultima: ${itDate(i.storico[fattoN-1].data)}</div>`:''}
@@ -687,9 +707,11 @@ function disegna(){
   document.getElementById('sogList').innerHTML=sogg.map(s=>`<option value="${esc(s)}">`).join('');
   const tits=[...new Set(dati.items.map(i=>i.tit).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'it'));
   document.getElementById('titList').innerHTML=tits.map(t=>`<option value="${esc(t)}">`).join('');
+  const own=[...new Set(dati.items.map(i=>(i.a||'').trim()).filter(Boolean))].sort((a,b)=>a.localeCompare(b,'it'));
+  document.getElementById('aList').innerHTML=own.map(s=>`<option value="${esc(s)}">`).join('');
 
   const items=ordina([...dati.items]);
-  const vis=items.filter(i=>(!fs||i.sog===fs)&&(!q||(i.tit+' '+i.sog+' '+i.cat+' '+(i.note||'')).toLowerCase().includes(q)));
+  const vis=items.filter(i=>(!fs||i.sog===fs)&&(!q||(i.tit+' '+i.sog+' '+i.cat+' '+(i.a||'')+' '+(i.note||'')).toLowerCase().includes(q)));
 
   const sc=items.filter(i=>giorniMancanti(i.data)<0).length;
   const tra30=items.filter(i=>{const g=giorniMancanti(i.data);return g>=0&&g<=30;}).length;
@@ -761,12 +783,21 @@ function riempiChips(){
     MODELLI.map((m,k)=>`<option value="${k}">${m.n}</option>`).join('');
 }
 function riempiCampi(i){
-  V('f_tit',i?i.tit:''); V('f_sog',i?i.sog:''); V('f_cat',i?i.cat:'Auto/Moto');
+  V('f_tit',i?i.tit:''); V('f_sog',i?i.sog:''); V('f_a',i?(i.a||''):'');
+  V('f_cat',i?i.cat:'Auto/Moto');
   V('f_data',i?i.data:oggiISO()); V('f_ora',i?i.ora:'');
   V('f_ric',i?i.ric:'12');
   V('f_pre',i?(i.pre||[]).join(', '):'30, 7, 1');
   V('f_cos',i?i.costo:''); V('f_km',i?i.km:''); V('f_note',i?i.note:'');
   document.getElementById('f_base').checked=i?!!i.daFatto:false;
+}
+function impostaOpz(i){
+  const has=!!(i&&(i.costo||i.km||i.note));
+  document.getElementById('grpRic').classList.toggle('on',has);
+  document.getElementById('grpAvanz').classList.toggle('on',has);
+}
+function toggleOpz(){
+  ['grpRic','grpAvanz'].forEach(id=>document.getElementById(id).classList.toggle('on'));
 }
 function gestisciSpecUI(){
   document.getElementById('specHint').style.display = specPending?'block':'none';
@@ -779,6 +810,7 @@ function apriForm(id){
   dnPending=i?(i.dn||null):null;
   document.getElementById('formTitolo').textContent=id?'✏️ Modifica scadenza':'➕ Nuova scadenza';
   riempiChips(); riempiCampi(i); gestisciSpecUI();
+  impostaOpz(i);
   apri('mForm');
 }
 function apriDuplica(id){
@@ -788,6 +820,7 @@ function apriDuplica(id){
   riempiChips(); riempiCampi(i);
   document.getElementById('f_sog').value='';
   gestisciSpecUI();
+  impostaOpz(i);
   apri('mForm');
   setTimeout(()=>{document.getElementById('f_sog').focus();},400);
 }
@@ -802,7 +835,7 @@ function salvaForm(){
   const tit=g('f_tit').trim(), data=g('f_data');
   if(!tit){alert('Scrivi che cosa scade.');return;}
   if(!data){alert('Metti la data di scadenza.');return;}
-  const o={id:idCorrente||('s'+Date.now()),tit,sog:g('f_sog').trim(),cat:g('f_cat'),data,
+  const o={id:idCorrente||('s'+Date.now()),tit,sog:g('f_sog').trim(),a:g('f_a').trim(),cat:g('f_cat'),data,
     ora:g('f_ora').trim(),
     ric:parseInt(g('f_ric')),
     pre:g('f_pre').split(',').map(x=>parseInt(x.trim())).filter(x=>x>=0),
@@ -844,6 +877,8 @@ function apriFormPrecompilato(cfg){
   V('f_tit',cfg.tit); V('f_cat',cfg.cat); V('f_data',cfg.data);
   V('f_ric',String(cfg.ric)); V('f_pre',cfg.pre);
   gestisciSpecUI();
+  document.getElementById('grpRic').classList.add('on');
+  document.getElementById('grpAvanz').classList.remove('on');
   apri('mForm');
 }
 function calcRev(){
@@ -929,7 +964,11 @@ function elimina(id){
   }
 }
 
-/* ---------- CALENDARIO ---------- */
+/* ---------- CALENDARIO (un file per persona) ---------- */
+function slug(s){
+  return (s||'').toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,'')||'io';
+}
 function esportaICS(){
   if(!dati.items.length){alert('Prima aggiungi qualche scadenza.');return;}
   const pad=n=>String(n).padStart(2,'0');
@@ -938,42 +977,55 @@ function esportaICS(){
   const txt=s=>String(s||'').replace(/\\/g,'\\\\').replace(/[,;]/g,m=>'\\'+m).replace(/\n/g,'\\n');
   const dayAfter=iso=>{const d=new Date(iso+'T00:00:00');d.setDate(d.getDate()+1);
     return d.getFullYear()+pad(d.getMonth()+1)+pad(d.getDate());};
-  let L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//ScadenzeFamiglia//IT','CALSCALE:GREGORIAN','METHOD:PUBLISH'];
-  dati.items.forEach(i=>{
-    L.push('BEGIN:VEVENT','UID:'+i.id+'@scadenzefamiglia','DTSTAMP:'+stamp,
-      'SUMMARY:'+txt('⚠️ '+i.tit+(i.sog?' — '+i.sog:'')));
-    if(i.ora){
-      const hm=i.ora.split(':').map(Number);
-      const fine=new Date(2000,0,1,hm[0],hm[1]); fine.setHours(fine.getHours()+1);
-      L.push('DTSTART:'+i.data.replace(/-/g,'')+'T'+p2(hm[0])+p2(hm[1])+'00');
-      L.push('DTEND:'+i.data.replace(/-/g,'')+'T'+p2(fine.getHours())+p2(fine.getMinutes())+'00');
-    }else{
-      L.push('DTSTART;VALUE=DATE:'+i.data.replace(/-/g,''),'DTEND;VALUE=DATE:'+dayAfter(i.data));
-    }
-    const desc=[i.costo?'Costo previsto: '+i.costo+' €':'',i.km?'Km previsti: '+i.km:'',i.note||''].filter(Boolean).join('\n');
-    if(desc) L.push('DESCRIPTION:'+txt(desc));
-    if(i.ric>0) L.push('RRULE:'+(i.ric%12===0?'FREQ=YEARLY;INTERVAL='+(i.ric/12):'FREQ=MONTHLY;INTERVAL='+i.ric));
-    (i.pre||[]).forEach(dd=>{
-      const quando=dd===0?' scade oggi':' tra '+dd+' giorni';
-      L.push('BEGIN:VALARM','ACTION:DISPLAY',
-        'DESCRIPTION:'+txt(i.tit+(i.sog?' ('+i.sog+')':'')+quando));
+
+  const gruppi={};
+  dati.items.forEach(i=>{ const k=((i.a||'').trim()||'io').toLowerCase(); (gruppi[k]=gruppi[k]||[]).push(i); });
+  const keys=Object.keys(gruppi);
+  const riepiloghi=[];
+
+  keys.forEach((k,idx)=>{
+    let L=['BEGIN:VCALENDAR','VERSION:2.0','PRODID:-//ScadenzeFamiglia//IT','CALSCALE:GREGORIAN','METHOD:PUBLISH'];
+    gruppi[k].forEach(i=>{
+      L.push('BEGIN:VEVENT','UID:'+i.id+'@scadenzefamiglia','DTSTAMP:'+stamp,
+        'SUMMARY:'+txt('⚠️ '+i.tit+(i.sog?' — '+i.sog:'')));
       if(i.ora){
-        const gg=addGiorni(i.data,-dd).replace(/-/g,'');
-        L.push('TRIGGER;VALUE=DATE-TIME:'+gg+'T090000');
+        const hm=i.ora.split(':').map(Number);
+        const fine=new Date(2000,0,1,hm[0],hm[1]); fine.setHours(fine.getHours()+1);
+        L.push('DTSTART:'+i.data.replace(/-/g,'')+'T'+p2(hm[0])+p2(hm[1])+'00');
+        L.push('DTEND:'+i.data.replace(/-/g,'')+'T'+p2(fine.getHours())+p2(fine.getMinutes())+'00');
       }else{
-        const ore=dd*24-9;
-        L.push('TRIGGER:'+(ore>0?'-PT'+ore+'H':'PT'+Math.abs(ore)+'H'));
+        L.push('DTSTART;VALUE=DATE:'+i.data.replace(/-/g,''),'DTEND;VALUE=DATE:'+dayAfter(i.data));
       }
-      L.push('END:VALARM');
+      const desc=[i.costo?'Costo previsto: '+i.costo+' €':'',i.km?'Km previsti: '+i.km:'',i.note||''].filter(Boolean).join('\n');
+      if(desc) L.push('DESCRIPTION:'+txt(desc));
+      if(i.ric>0) L.push('RRULE:'+(i.ric%12===0?'FREQ=YEARLY;INTERVAL='+(i.ric/12):'FREQ=MONTHLY;INTERVAL='+i.ric));
+      (i.pre||[]).forEach(dd=>{
+        const quando=dd===0?' scade oggi':' tra '+dd+' giorni';
+        L.push('BEGIN:VALARM','ACTION:DISPLAY',
+          'DESCRIPTION:'+txt(i.tit+(i.sog?' ('+i.sog+')':'')+quando));
+        if(i.ora){
+          const gg=addGiorni(i.data,-dd).replace(/-/g,'');
+          L.push('TRIGGER;VALUE=DATE-TIME:'+gg+'T090000');
+        }else{
+          const ore=dd*24-9;
+          L.push('TRIGGER:'+(ore>0?'-PT'+ore+'H':'PT'+Math.abs(ore)+'H'));
+        }
+        L.push('END:VALARM');
+      });
+      L.push('END:VEVENT');
     });
-    L.push('END:VEVENT');
+    L.push('END:VCALENDAR');
+    const nome='calendario-'+slug(k)+'.ics';
+    setTimeout(()=>scarica(nome,L.join('\r\n'),'text/calendar'), idx*700);
+    riepiloghi.push('📄 '+nome+'  —  '+gruppi[k].length+' scadenze per '+(k==='io'?'TE':k.toUpperCase()));
   });
-  L.push('END:VCALENDAR');
-  scarica('scadenze-famiglia.ics',L.join('\r\n'),'text/calendar');
+
   dati.meta.ultimoCal=new Date().toISOString();
   localStorage.setItem(KEY,JSON.stringify(dati));
   aggiornaBannerCal();
-  alert('File creato! 📅 Ora caricalo nel calendario condiviso\n(calendar.google.com → Impostazioni → Importa ed esporta).');
+  alert('Creati '+keys.length+' file 📅\n\n'+riepiloghi.join('\n')+
+    '\n\nOra importa OGNI file nel calendario della persona giusta\n(vedi guida, PARTE 3).'+
+    (keys.length>1?'\n\nSe il browser chiede il permesso di scaricare più file → Consenti.':''));
 }
 
 /* ---------- STAMPA RIEPILOGO ---------- */
@@ -984,8 +1036,7 @@ function stampa(){
   const gruppi={};
   items.forEach(i=>{ const k=i.data.slice(0,7); (gruppi[k]=gruppi[k]||[]).push(i); });
   let H='<div class="tabSt">🗓️ Scadenze Famiglia</div>'+
-        '<div class="tabSub">Riepilogo stampato il '+itDate(oggiISO())+' · '+items.length+' scadenze · '+
-        'la situazione cambia: ristampa dopo le grandi modifiche</div>';
+        '<div class="tabSub">Riepilogo stampato il '+itDate(oggiISO())+' · '+items.length+' scadenze</div>';
   Object.keys(gruppi).sort().forEach(k=>{
     const [y,m]=k.split('-');
     H+='<div class="tabMe">'+MESI[parseInt(m)-1]+' '+y+'</div><table>';
@@ -993,7 +1044,8 @@ function stampa(){
       const rep=ripetizione(i).replace(' · ','');
       H+='<tr>'+
          '<td class="tabDt"><b>'+i.data.slice(8,10)+'/'+m+'</b>'+(i.ora?'<br>'+esc(i.ora):'')+'</td>'+
-         '<td>'+esc(i.tit)+(rep?'<br><span class="tabRp">'+esc(rep)+'</span>':'')+'</td>'+
+         '<td>'+esc(i.tit)+(i.a?' <span class="tabRp">👤 '+esc(i.a)+'</span>':'')+
+           (rep?'<br><span class="tabRp">'+esc(rep)+'</span>':'')+'</td>'+
          '<td>'+esc(i.sog||'—')+'</td>'+
          '<td class="tabCo">'+(i.costo?esc(i.costo)+' €':'—')+'</td>'+
          '</tr>';
