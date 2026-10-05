@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<!-- SCADENZE FAMIGLIA — versione 11 (kit, rimanda a scelta, filtro categoria, testo grande) -->
+<!-- SCADENZE FAMIGLIA — versione 11.1 (compatibilità iPad/iPhone con iOS vecchio) -->
 <html lang="it">
 <head>
 <meta charset="utf-8">
@@ -22,7 +22,6 @@ body.dark{
  --bord2:#26303c; --inpB:#3a4656; --soft:#222b36; --note:#1f2732; --lab:#b7c2d0;
  --mut:#8a97a8; --foot:#778393; --c0:#2a1a1c;
 }
-/* ---- TESTO GRANDE ---- */
 body.big{font-size:17px}
 body.big .tit{font-size:19px}
 body.big .sub{font-size:15px}
@@ -60,7 +59,6 @@ button:active{filter:brightness(.92)}
 input,select,textarea{font-family:inherit;font-size:16px;width:100%;padding:11px;border:1px solid var(--inpB);
      border-radius:9px;background:var(--card);color:var(--txt)}
 label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px;color:var(--lab)}
-/* ---- MENU A TENDINA ---- */
 .menuwrap{position:relative;display:inline-block}
 .menu{position:absolute;top:calc(100% + 6px);left:0;background:var(--card);border:1px solid var(--bord);border-radius:12px;
       box-shadow:0 8px 24px rgba(0,0,0,.18);display:none;min-width:240px;z-index:50;overflow:hidden;padding:4px}
@@ -69,13 +67,11 @@ label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px;color:var(-
              background:var(--card);border-bottom:1px solid var(--bord2);margin:0}
 .menu button:last-child{border-bottom:0}
 .menu button:active{background:var(--soft)}
-/* ---- SCHEDE ---- */
 .tabs{display:flex;gap:8px;margin-bottom:12px}
 .tab{flex:1;padding:13px 6px;font-size:15px;font-weight:700;border-radius:11px;background:var(--btn);color:var(--lab)}
 .tab.attiva{background:#1f3a5f;color:#fff}
 .sez{font-size:12px;font-weight:800;letter-spacing:.5px;color:var(--mut);margin:18px 2px 8px;text-transform:uppercase}
 .wide{width:100%;padding:13px;font-size:15px;margin-top:4px}
-/* ---- STRISCIA BACKUP ---- */
 .banner{display:flex;flex-wrap:wrap;gap:10px;align-items:center;justify-content:space-between;
         border-radius:11px;padding:12px 14px;margin-bottom:12px;font-size:14px;line-height:1.4}
 .rosso{background:#fdecea;border:1px solid #f0a9a0;color:#8c1d13;animation:pulsa 2.2s infinite}
@@ -83,12 +79,10 @@ label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px;color:var(-
 .verde{background:#e9f7ee;border:1px solid #b2dfc2;color:#1a5c2a}
 @keyframes pulsa{0%,100%{box-shadow:0 0 0 0 rgba(198,40,40,0)}50%{box-shadow:0 0 0 5px rgba(198,40,40,.13)}}
 .bbtn{background:#1f3a5f;color:#fff;white-space:nowrap}
-/* ---- STATISTICHE ---- */
 .stats{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
 .stat{background:var(--card);border-radius:11px;padding:10px 14px;flex:1;min-width:120px;border:1px solid var(--bord2)}
 .stat b{display:block;font-size:22px}
 .stat span{font-size:12px;color:var(--mut)}
-/* ---- CARD ---- */
 .card{background:var(--card);border-radius:12px;padding:14px;margin-bottom:10px;border-left:7px solid #ccc;box-shadow:0 1px 3px rgba(0,0,0,.06)}
 .c0{border-left-color:#c62828;background:var(--c0)}
 .c1{border-left-color:#ef6c00}
@@ -102,7 +96,6 @@ label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px;color:var(-
 .note{font-size:13px;margin-top:7px;background:var(--note);padding:8px 10px;border-radius:7px}
 .acts{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
 .acts button{padding:11px 13px;font-size:14px;min-height:46px}
-/* ---- LISTA DA FARE ---- */
 .todoRow{display:flex;align-items:center;gap:10px;background:var(--card);border-radius:12px;padding:12px 14px;
          margin-bottom:8px;border:1px solid var(--bord2);box-shadow:0 1px 3px rgba(0,0,0,.05)}
 .todoRow .ck{width:34px;height:34px;border-radius:50%;border:2px solid var(--inpB);background:var(--card);
@@ -111,8 +104,7 @@ label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px;color:var(-
 .ttesto{font-size:15px;word-break:break-word}
 .todoFatta{opacity:.6}
 .todoFatta .ttesto{text-decoration:line-through;color:var(--foot)}
-/* ---- MODALI ---- */
-.modal{position:fixed;inset:0;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;padding:16px;overflow:auto;z-index:9}
+.modal{position:fixed;top:0;right:0;bottom:0;left:0;background:rgba(0,0,0,.5);display:none;align-items:flex-start;justify-content:center;padding:16px;overflow:auto;z-index:9}
 .modal.on{display:flex}
 .box{background:var(--card);border-radius:14px;padding:16px;max-width:440px;width:100%;margin-bottom:40px}
 .box h2{margin:0 0 6px;font-size:19px}
@@ -128,11 +120,9 @@ label{display:block;font-size:13px;font-weight:600;margin:10px 0 4px;color:var(-
 .fset{border:1px solid var(--bord2);border-radius:12px;padding:12px 14px;margin-bottom:14px;background:var(--note)}
 .fset h3{margin:0 0 4px;font-size:15px}
 .res{background:#e9f7ee;border:1px solid #b2dfc2;color:#1a5c2a;border-radius:9px;padding:10px 12px;margin-top:10px;font-size:14px;line-height:1.55;display:none}
-/* ---- KIT ---- */
 .kitRow{display:flex;align-items:center;gap:10px;margin-top:8px}
 .kitRow .kitLab{flex:1;font-size:14px;font-weight:600;color:var(--lab)}
 .kitRow input[type=date]{flex:none;width:165px}
-/* ---- ARCHIVIO ---- */
 .arcT{width:100%;border-collapse:collapse;margin:4px 0 16px;font-size:13px}
 .arcT th{text-align:left;color:var(--mut);font-size:11px;text-transform:uppercase;padding:4px 6px;border-bottom:2px solid var(--bord)}
 .arcT td{padding:6px;border-bottom:1px solid var(--bord2)}
@@ -145,7 +135,6 @@ h3.arcH{margin:16px 0 2px;font-size:15px}
        padding:13px 20px;border-radius:26px;font-size:14px;opacity:0;transition:.25s;z-index:99;max-width:92%;
        text-align:center;box-shadow:0 4px 14px rgba(0,0,0,.35);pointer-events:none}
 #toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
-/* ---- STAMPA ---- */
 #stampa{display:none}
 .tabSt{font-size:24px;font-weight:800;color:#000}
 .tabSub{font-size:12px;color:#555;margin:2px 0 4px}
@@ -218,7 +207,7 @@ footer{text-align:center;font-size:12px;color:var(--foot);padding:24px}
 <div id="stampa"></div>
 <div id="toast"></div>
 
-<footer>v11 · Quando la striscia in alto è rossa → ☰ Menu → 💾 Backup 😉</footer>
+<footer>v11.1 · Quando la striscia in alto è rossa → ☰ Menu → 💾 Backup 😉</footer>
 
 <div class="modal" id="mForm">
  <div class="box">
@@ -340,7 +329,7 @@ footer{text-align:center;font-size:12px;color:var(--foot);padding:24px}
   <div class="kitRow"><span class="kitLab">Tagliando</span><input type="date" id="k_tag"></div>
   <h3 style="margin:14px 0 2px;font-size:15px">👤 Persona</h3>
   <div class="kitRow"><span class="kitLab">Patente</span><input type="date" id="k_pat"></div>
-  <div class="kitRow"><span class="kitLab">Carta d\u2019identità</span><input type="date" id="k_cid"></div>
+  <div class="kitRow"><span class="kitLab">Carta d’identità</span><input type="date" id="k_cid"></div>
   <div class="kitRow"><span class="kitLab">Dentista (controllo)</span><input type="date" id="k_den"></div>
   <div class="kitRow"><span class="kitLab">Visita oculistica</span><input type="date" id="k_occ"></div>
   <div class="kitRow"><span class="kitLab">Analisi del sangue</span><input type="date" id="k_ana"></div>
@@ -1370,7 +1359,7 @@ function caricaIncollato(){
 
 /* ---------- UTILI ---------- */
 const g=id=>document.getElementById(id).value;
-const V=(id,v)=>document.getElementById(id).value=v??'';
+const V=(id,v)=>document.getElementById(id).value=(v===undefined||v===null)?'':v;
 const apri=id=>document.getElementById(id).classList.add('on');
 const chiudi=id=>{
   document.getElementById(id).classList.remove('on');
